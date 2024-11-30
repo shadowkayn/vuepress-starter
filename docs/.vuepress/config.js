@@ -6,6 +6,7 @@ import { defineUserConfig } from 'vuepress'
 export default defineUserConfig({
     bundler: viteBundler(),
     theme: defaultTheme({
+            base: '/vuepress-starter/',
             lang:'zh-CN',
             title: 'KAYN Blogs',
             description: '个人博客-用来学习记录',
