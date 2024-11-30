@@ -2,6 +2,9 @@
 node_modules/
 .idea/
 
+# 忽略 VuePress 生成的 dist 文件夹
+docs/.vuepress/dist/
+
 # 忽略日志文件
 *.log
 
