@@ -1,5 +1,7 @@
 # 忽略 node_modules
 node_modules/
+.idea/
+
 
 # 忽略 VuePress 生成的 dist 文件夹
 docs/.vuepress/dist/
