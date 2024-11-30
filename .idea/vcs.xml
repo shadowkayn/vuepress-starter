@@ -2,6 +2,9 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+<<<<<<< HEAD
     <mapping directory="$PROJECT_DIR$/vuepress-starter" vcs="Git" />
+=======
+>>>>>>> b15304f7fdc4818a81ebf53f68ca89b79feefcd1
   </component>
 </project>
