@@ -8,7 +8,7 @@
   "scripts": {
     "docs:dev": "vuepress dev docs",
     "build": "vuepress build docs",
-    "deploy": "vuepress build docs && gh-pages -d docs/.vuepress/dist"
+    "deploy": "vuepress build docs && gh-pages -d docs/.vuepress/dist -r https://x-access-token:${GITHUB_TOKEN}@github.com/shadowkayn/vuepress-starter.git"
   },
   "dependencies": {
     "@vuepress/client": "^2.0.0-rc.15",
