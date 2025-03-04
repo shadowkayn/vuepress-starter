@@ -23,7 +23,11 @@ jobs:
           rm -rf node_modules package-lock.json
           npm install
           npm install -D sass-embedded sass
-      
+
+      - name: 🔧 配置 Git 用户
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: 🏗️ 构建 VuePress
         run: npm run build  # 对应你的 package.json 里的 build 命令
