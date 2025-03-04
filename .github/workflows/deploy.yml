@@ -3,29 +3,28 @@ name: Deploy VuePress Site
 on:
   push:
     branches:
-      - main  # 监听 main 分支的 push 事件
+      - main  # 当 main 分支有新的 push 时触发
 
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 检出代码
+      - name: 🛎️ 检出代码
         uses: actions/checkout@v3
 
-      - name: 设置 Node.js
+      - name: 🔧 设置 Node.js 环境
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '18'  # 适用于 VuePress 2
 
-      - name: 安装依赖
+      - name: 📦 安装依赖
         run: npm install
 
-      - name: 构建 VuePress
-        run: npm run docs:build  # 确保 package.json 里有 "docs:build" 脚本
+      - name: 🏗️ 构建 VuePress
+        run: npm run build  # 对应你的 package.json 里的 build 命令
 
-      - name: 部署到 GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages  # 部署到 gh-pages 分支
-          folder: docs/.vuepress/dist  # VuePress 默认的构建目录
+      - name: 🚀 部署到 GitHub Pages
+        run: npm run deploy  # 调用 package.json 里的 deploy 命令
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub 自动提供的 Token，允许推送到 gh-pages
