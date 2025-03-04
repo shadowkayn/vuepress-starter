@@ -3,7 +3,7 @@ name: Deploy VuePress Site
 on:
   push:
     branches:
-      - main  # 当 main 分支有新的 push 时触发
+      - master  # 当 master 分支有新的 push 时触发
 
 jobs:
   build-deploy:
