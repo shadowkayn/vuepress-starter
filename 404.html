@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="generator" content="VuePress 2.0.0-rc.15" />
+    <meta name="generator" content="VuePress 2.0.0-rc.20" />
     <style>
       :root {
         --vp-c-bg: #fff;
       }
 
       [data-theme='dark'] {
-        --vp-c-bg: #22272e;
+        --vp-c-bg: #1b1b1f;
       }
 
       html,
@@ -19,25 +19,25 @@
       }
     </style>
     <script>
-      const userMode = localStorage.getItem('vuepress-color-scheme')
-      const systemDarkMode =
+      const useChoice = localStorage.getItem('vuepress-color-scheme')
+      const systemStatus =
         'matchMedia' in window
           ? window.matchMedia('(prefers-color-scheme: dark)').matches
           : false
 
-      if (userMode === 'light') {
+      if (useChoice === 'light') {
         document.documentElement.dataset.theme = 'light'
-      } else if (userMode === 'dark' || systemDarkMode) {
+      } else if (useChoice === 'dark' || systemStatus) {
         document.documentElement.dataset.theme = 'dark'
       }
     </script>
     <title></title><meta name="description" content="">
-    <link rel="preload" href="/vuepress-starter/assets/style-BjkHw9YM.css" as="style"><link rel="stylesheet" href="/vuepress-starter/assets/style-BjkHw9YM.css">
-    <link rel="modulepreload" href="/vuepress-starter/assets/app-CDUjJ4nK.js"><link rel="modulepreload" href="/vuepress-starter/assets/404.html-BFiNM7-G.js">
-    <link rel="prefetch" href="/vuepress-starter/assets/index.html-D8HZAacD.js" as="script"><link rel="prefetch" href="/vuepress-starter/assets/daily.html-BsMo97EG.js" as="script"><link rel="prefetch" href="/vuepress-starter/assets/knowledge.html-D943VDyy.js" as="script"><link rel="prefetch" href="/vuepress-starter/assets/index.html-CXYvXnEb.js" as="script">
+    <link rel="preload" href="/vuepress-starter/assets/style-DtlGcO7N.css" as="style"><link rel="stylesheet" href="/vuepress-starter/assets/style-DtlGcO7N.css">
+    <link rel="modulepreload" href="/vuepress-starter/assets/app-nP8NSXBV.js"><link rel="modulepreload" href="/vuepress-starter/assets/404.html-CGqLyopm.js">
+    <link rel="prefetch" href="/vuepress-starter/assets/index.html-DfAO7isR.js" as="script"><link rel="prefetch" href="/vuepress-starter/assets/knowledge.html-8zYnkqun.js" as="script"><link rel="prefetch" href="/vuepress-starter/assets/daily.html-BzBBwGrg.js" as="script"><link rel="prefetch" href="/vuepress-starter/assets/knowledge.html-CBCZdfTF.js" as="script"><link rel="prefetch" href="/vuepress-starter/assets/daily.html-Cru-fAVd.js" as="script"><link rel="prefetch" href="/vuepress-starter/assets/knowledge.html-DsI9v6ps.js" as="script"><link rel="prefetch" href="/vuepress-starter/assets/index.html-D9QzEntZ.js" as="script"><link rel="prefetch" href="/vuepress-starter/assets/setupDevtools-QXEOFQJV-q1TFDehP.js" as="script">
   </head>
   <body>
-    <div id="app"><!--[--><div class="vp-theme-container" vp-container data-v-463c2c5d><main class="page" data-v-463c2c5d><div class="theme-default-content" vp-content data-v-463c2c5d><h1 data-v-463c2c5d>404</h1><blockquote data-v-463c2c5d>There&#39;s nothing here.</blockquote><a class="route-link" href="/vuepress-starter/" data-v-463c2c5d>Take me home</a></div></main></div><!--[--><!----><!--]--><!--]--></div>
-    <script type="module" src="/vuepress-starter/assets/app-CDUjJ4nK.js" defer></script>
+    <div id="app"><!--[--><div class="vp-theme-container" vp-container data-v-ec9917b8><main class="page" data-v-ec9917b8><div vp-content data-v-ec9917b8><h1 data-v-ec9917b8>404</h1><blockquote data-v-ec9917b8>How did we get here?</blockquote><a class="route-link" href="/vuepress-starter/" data-v-ec9917b8>Take me home</a></div></main></div><!--[--><!----><!--]--><!--]--></div>
+    <script type="module" src="/vuepress-starter/assets/app-nP8NSXBV.js" defer></script>
   </body>
 </html>
