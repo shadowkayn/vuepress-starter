@@ -73,15 +73,15 @@ export default defineUserConfig({
                         text: "JavaScript",
                         collapsable: true, // 不折叠
                         children: [
-                            { text: "日常问题", link: "/handbook/ConditionalTypes" },
-                            { text: "知识点", link: "/handbook/ConditionalTypes" },
+                            { text: "日常问题", link: "/JavaScript/daily.md" },
+                            { text: "知识点", link: "/JavaScript/knowledge.md" },
                         ],
                     },
                     {
                         text: "工程化",
                         collapsable: false, // 不折叠
                         children: [
-                            { text: "建设中", link: "/handbook/ConditionalTypes" },
+                            { text: "建设中", link: "/Engineering/knowledge.md" },
                         ],
                     },
                 ],
