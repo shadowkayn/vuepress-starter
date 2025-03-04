@@ -1,5 +1,5 @@
 import comp from "E:/blogs/vuepress-starter/docs/.vuepress/.temp/pages/JavaScript/knowledge.html.vue"
-const data = JSON.parse("{\"path\":\"/JavaScript/knowledge.html\",\"title\":\"Knowledge\",\"lang\":\"en-US\",\"frontmatter\":{},\"headers\":[],\"git\":{\"updatedTime\":null,\"contributors\":[]},\"filePathRelative\":\"JavaScript/knowledge.md\"}")
+const data = JSON.parse("{\"path\":\"/JavaScript/knowledge.html\",\"title\":\"Knowledge\",\"lang\":\"en-US\",\"frontmatter\":{},\"headers\":[],\"git\":{\"updatedTime\":1741084150000,\"contributors\":[{\"name\":\"shadowkayn\",\"email\":\"1669080561@qq.com\",\"commits\":1}]},\"filePathRelative\":\"JavaScript/knowledge.md\"}")
 export { comp, data }
 
 if (import.meta.webpackHot) {
