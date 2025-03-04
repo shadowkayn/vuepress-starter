@@ -1,0 +1,31 @@
+name: Deploy VuePress Site
+
+on:
+  push:
+    branches:
+      - main  # 监听 main 分支的 push 事件
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v3
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: 安装依赖
+        run: npm install
+
+      - name: 构建 VuePress
+        run: npm run docs:build  # 确保 package.json 里有 "docs:build" 脚本
+
+      - name: 部署到 GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages  # 部署到 gh-pages 分支
+          folder: docs/.vuepress/dist  # VuePress 默认的构建目录
