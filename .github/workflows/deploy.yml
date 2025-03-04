@@ -16,10 +16,12 @@ jobs:
       - name: 🔧 设置 Node.js 环境
         uses: actions/setup-node@v3
         with:
-          node-version: '18'  # 适用于 VuePress 2
+          node-version: '20'  # 适用于 VuePress 2
 
-      - name: 📦 安装依赖
-        run: npm install
+      - name: 📦 安装依赖（清理缓存）
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install
 
       - name: 🏗️ 构建 VuePress
         run: npm run build  # 对应你的 package.json 里的 build 命令
