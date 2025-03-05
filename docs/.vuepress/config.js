@@ -82,6 +82,7 @@ export default defineUserConfig({
                         collapsable: false, // 不折叠
                         children: [
                             { text: "建设中", link: "/Engineering/knowledge.md" },
+                            { text: "dev tips", link: "/Engineering/tips.md" },
                         ],
                     },
                 ],
