@@ -1,4 +1,67 @@
-<template><div><h1 id="q-a" tabindex="-1"><a class="header-anchor" href="#q-a"><span>Q&amp;A</span></a></h1>
-</div></template>
+<template><div><h3 id="_1、纯css实现多行文本省略展示-省略号后跟随按钮-按钮可以展开-收起文本" tabindex="-1"><a class="header-anchor" href="#_1、纯css实现多行文本省略展示-省略号后跟随按钮-按钮可以展开-收起文本"><span>1、纯css实现多行文本省略展示，省略号后跟随按钮，按钮可以展开/收起文本</span></a></h3>
+<p><img src="/images/cssImages/3.png" alt="''">
+<img src="/images/cssImages/4.png" alt="''"></p>
+<div class="language-html line-numbers-mode" data-highlighter="prismjs" data-ext="html" data-title="html"><pre v-pre><code><span class="line"><span class="token doctype"><span class="token punctuation">&lt;!</span><span class="token doctype-tag">DOCTYPE</span> <span class="token name">html</span><span class="token punctuation">></span></span></span>
+<span class="line"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>en<span class="token punctuation">"</span></span><span class="token punctuation">></span></span></span>
+<span class="line"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">></span></span></span>
+<span class="line">    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">charset</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>UTF-8<span class="token punctuation">"</span></span><span class="token punctuation">></span></span></span>
+<span class="line">    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>title</span><span class="token punctuation">></span></span>Title<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>title</span><span class="token punctuation">></span></span></span>
+<span class="line">    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>style</span><span class="token punctuation">></span></span><span class="token style"><span class="token language-css"></span>
+<span class="line">        <span class="token selector">.content</span> <span class="token punctuation">{</span></span>
+<span class="line">            <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span></span>
+<span class="line">            <span class="token property">width</span><span class="token punctuation">:</span> 300px<span class="token punctuation">;</span></span>
+<span class="line">            <span class="token property">border</span><span class="token punctuation">:</span> 1px solid #ccc<span class="token punctuation">;</span></span>
+<span class="line">            <span class="token property">padding</span><span class="token punctuation">:</span> 12px<span class="token punctuation">;</span></span>
+<span class="line">        <span class="token punctuation">}</span></span>
+<span class="line">        <span class="token selector">.text::before</span><span class="token punctuation">{</span></span>
+<span class="line">            <span class="token property">content</span><span class="token punctuation">:</span> <span class="token string">''</span><span class="token punctuation">;</span></span>
+<span class="line">            <span class="token property">float</span><span class="token punctuation">:</span> right<span class="token punctuation">;</span></span>
+<span class="line">            <span class="token property">height</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span></span>
+<span class="line">            <span class="token property">margin-bottom</span><span class="token punctuation">:</span> -20px<span class="token punctuation">;</span></span>
+<span class="line">        <span class="token punctuation">}</span></span>
+<span class="line">        <span class="token selector">.btn</span> <span class="token punctuation">{</span></span>
+<span class="line">            <span class="token property">float</span><span class="token punctuation">:</span> right<span class="token punctuation">;</span></span>
+<span class="line">            <span class="token property">clear</span><span class="token punctuation">:</span> both<span class="token punctuation">;</span></span>
+<span class="line">            <span class="token property">margin-right</span><span class="token punctuation">:</span> 8px<span class="token punctuation">;</span></span>
+<span class="line">            <span class="token property">color</span><span class="token punctuation">:</span> #3a5ccc<span class="token punctuation">;</span></span>
+<span class="line">        <span class="token punctuation">}</span></span>
+<span class="line">        <span class="token selector">.text</span> <span class="token punctuation">{</span></span>
+<span class="line">            <span class="token property">display</span><span class="token punctuation">:</span> -webkit-box<span class="token punctuation">;</span></span>
+<span class="line">            <span class="token property">overflow</span><span class="token punctuation">:</span> hidden<span class="token punctuation">;</span></span>
+<span class="line">            <span class="token property">-webkit-line-clamp</span><span class="token punctuation">:</span> 3<span class="token punctuation">;</span></span>
+<span class="line">            <span class="token property">-webkit-box-orient</span><span class="token punctuation">:</span> vertical<span class="token punctuation">;</span></span>
+<span class="line">        <span class="token punctuation">}</span></span>
+<span class="line">        <span class="token selector">#exp</span> <span class="token punctuation">{</span></span>
+<span class="line">            <span class="token property">visibility</span><span class="token punctuation">:</span> hidden<span class="token punctuation">;</span></span>
+<span class="line">        <span class="token punctuation">}</span></span>
+<span class="line">        <span class="token selector">#exp:checked+.text</span><span class="token punctuation">{</span></span>
+<span class="line">            <span class="token property">-webkit-line-clamp</span><span class="token punctuation">:</span> 999<span class="token punctuation">;</span> <span class="token comment">/*设置一个足够大的行数就可以了*/</span></span>
+<span class="line">        <span class="token punctuation">}</span></span>
+<span class="line">        <span class="token selector">.btn::after</span><span class="token punctuation">{</span></span>
+<span class="line">            <span class="token property">content</span><span class="token punctuation">:</span><span class="token string">'展开'</span></span>
+<span class="line">        <span class="token punctuation">}</span></span>
+<span class="line">        <span class="token selector">#exp:checked+.text .btn::after</span><span class="token punctuation">{</span></span>
+<span class="line">            <span class="token property">content</span><span class="token punctuation">:</span><span class="token string">'收起'</span></span>
+<span class="line">        <span class="token punctuation">}</span></span>
+<span class="line">    </span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>style</span><span class="token punctuation">></span></span></span>
+<span class="line"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">></span></span></span>
+<span class="line"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">></span></span></span>
+<span class="line"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>content<span class="token punctuation">"</span></span><span class="token punctuation">></span></span></span>
+<span class="line">    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>checkbox<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>exp<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span></span>
+<span class="line">    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span><span class="token punctuation">></span></span></span>
+<span class="line">        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>btn<span class="token punctuation">"</span></span> <span class="token attr-name">for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>exp<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span></span>
+<span class="line">        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">></span></span></span>
+<span class="line">            但听得蹄声如雷，十余乘马疾风般卷上山来。马上乘客一色都是玄色薄毡大氅，</span>
+<span class="line">            里面玄色布衣，但见人似虎，马如龙，人既矫捷，马亦雄骏，每一匹马都是高头</span>
+<span class="line">            长腿，通体黑毛，奔到近处，群雄眼前一亮，金光闪闪，却见每匹马的蹄铁竟然</span>
+<span class="line">            是黄金打就。来者一共是一十九骑，人数虽不甚多，气势之壮，却似有如千军万</span>
+<span class="line">            马一般，前面一十八骑奔到近处，拉马向两旁一分，最后一骑从中驰出</span>
+<span class="line">        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span></span>
+<span class="line">    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span></span>
+<span class="line"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span></span>
+<span class="line"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">></span></span></span>
+<span class="line"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">></span></span></span>
+<span class="line"></span></code></pre>
+<div class="line-numbers" aria-hidden="true" style="counter-reset:line-number 0"><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div><div class="line-number"></div></div></div></div></template>
 
 
