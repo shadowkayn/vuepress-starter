@@ -65,16 +65,16 @@ export default defineUserConfig({
                         text: "CSS",
                         collapsible: false, // 不折叠
                         children: [
-                            { text: "日常问题", link: "/css/daily.md" },
+                            { text: "开发场景", link: "/css/daily.md" },
                             { text: "知识点", link: "/css/knowledge.md" },
                         ],
                     },
                     {
-                        text: "JavaScript",
+                        text: "Vue",
                         collapsable: true, // 不折叠
                         children: [
-                            { text: "日常问题", link: "/JavaScript/daily.md" },
-                            { text: "知识点", link: "/JavaScript/knowledge.md" },
+                            { text: "开发场景", link: "/Vue/daily.md" },
+                            { text: "知识点", link: "/Vue/knowledge.md" },
                         ],
                     },
                     {

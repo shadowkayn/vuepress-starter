@@ -63,3 +63,39 @@
 </body>
 </html>
 ```
+
+### 2、flex布局+margin实现元素巧妙居中
+首先容器必须是flex布局<br>
+当你想居中子元素时，只需找到某个子元素设置其margin:auto即可<br>
+例：如下五个元素
+```html
+<div class="box">
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+    <div class="item"></div>
+</div>
+```
+当你想让右边两个元素，左边三个元素布局时，只需找到第三个子元素将其 **margin-right** 属性设为 **auto**；或者找到其第四个子元素将 **margin-left** 属性设为 **auto** 即可
+```css
+&:nth-child(3) {
+    background: #181818;
+    margin-right: auto;
+}
+/*或者*/
+&:nth-child(4) {
+    background: #f02d2d;
+    margin-left: auto;
+}
+```
+![''](/images/cssImages/5.png)
+同理，如果你想让中间元素居中布局，需要找到第三个子元素，将其 **margin-left** 和 **margin-right** 属性都设为 **auto**
+```css
+&:nth-child(3) {
+    background: #181818;
+    margin-right: auto;
+    margin-left: auto;
+}
+```
+![''](/images/cssImages/6.png)

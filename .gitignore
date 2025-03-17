@@ -18,8 +18,8 @@ Thumbs.db
 .env.local
 
 # 忽略本地开发环境的临时文件
-.vuepress/.temp/
-.vuepress/.cache/
+docs/.vuepress/.temp/
+docs/.vuepress/.cache/
 
 # 忽略敏感配置文件
-.vuepress/config.local.js
+docs/.vuepress/config.local.js
