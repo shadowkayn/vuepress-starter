@@ -3,4 +3,4 @@
 
 #### 此博客主要用来收集平时遇到的实际开发问题及已解决的方案，亦或是收集某些技术栈，网站将持续更新...
 
-[![镇站之图](/images/logo.jpg)](https://markdown.com.cn)
+[![镇站之图](/images/bk.png)](https://markdown.com.cn)
