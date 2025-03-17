@@ -6,6 +6,9 @@ import { defineUserConfig } from 'vuepress'
 export default defineUserConfig({
     bundler: viteBundler(),
     base:'/vuepress-starter/',
+    head: [
+        ['link', { rel: 'icon', href: '/favicon.ico' }], // 添加 favicon 配置
+    ],
     theme: defaultTheme({
             lang:'zh-CN',
             title: 'KAYN Blogs',

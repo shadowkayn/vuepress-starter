@@ -1,10 +1,19 @@
 /* docs/.vuepress/styles/index.scss */
 
+.vp-theme-container {
+  .vp-navbar {
+    .vp-site-logo {
+      max-height: 40px;
+      border-radius: 4px;
+    }
+  }
+}
+
 pre {
   background-color: #424448;
   color: #fff;
   border-radius: 5px;
-  padding: 1rem;
+  padding: 0.5rem;
   overflow-x: auto;
   font-size: 0.875rem;
   line-height: 1.5;
@@ -25,7 +34,7 @@ code {
 }
 
 p,span{
-  line-height: 2.4;
+  line-height: 1.6;
 }
 
 p{
@@ -33,6 +42,6 @@ p{
 }
 
 li{
-  line-height: 2.4;
+  line-height: 1.6;
   font-size: 14px;
 }
