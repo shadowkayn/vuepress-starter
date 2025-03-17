@@ -38,6 +38,10 @@ export default defineUserConfig({
                     text: 'React',
                     link: '/react/README.md',
                 },
+                {
+                    text: '组件库',
+                    link: '/components/README.md',
+                },
                 // NavbarGroup
                 {
                     text: '建设中',
@@ -73,8 +77,16 @@ export default defineUserConfig({
                         ],
                     },
                     {
+                        text: "JavaScript",
+                        collapsable: false, // 不折叠
+                        children: [
+                            { text: "开发场景", link: "/JavaScript/daily.md" },
+                            { text: "知识点", link: "/JavaScript/knowledge.md" },
+                        ],
+                    },
+                    {
                         text: "Vue",
-                        collapsable: true, // 不折叠
+                        collapsable: false, // 不折叠
                         children: [
                             { text: "开发场景", link: "/Vue/daily.md" },
                             { text: "知识点", link: "/Vue/knowledge.md" },

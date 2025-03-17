@@ -6,7 +6,7 @@
 <img src="/images/cssImages/2.png" alt="''"></p>
 <h3 id="_3、-selection伪元素" tabindex="-1"><a class="header-anchor" href="#_3、-selection伪元素"><span>3、::selection伪元素</span></a></h3>
 <p>表示文档中被用户高亮的部分</p>
-<div class="language-css line-numbers-mode" data-highlighter="prismjs" data-ext="css" data-title="css"><pre v-pre><code><span class="line"><span class="token selector">p::selection</span> <span class="token punctuation">{</span></span>
+<div class="language-css line-numbers-mode" data-highlighter="prismjs" data-ext="css"><pre v-pre><code><span class="line"><span class="token selector">p::selection</span> <span class="token punctuation">{</span></span>
 <span class="line">    <span class="token property">background</span><span class="token punctuation">:</span> #ff0000<span class="token punctuation">;</span></span>
 <span class="line"><span class="token punctuation">}</span></span>
 <span class="line"></span></code></pre>
