@@ -93,6 +93,7 @@ export default defineUserConfig({
                     },
                 ]
             },
+            lastUpdated: false,
         }),
 })
 
