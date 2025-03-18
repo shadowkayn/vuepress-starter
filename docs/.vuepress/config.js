@@ -7,7 +7,7 @@ export default defineUserConfig({
     bundler: viteBundler(),
     base:'/vuepress-starter/',
     head: [
-        ['link', { rel: 'icon', href: '/favicon.ico' }], // 添加 favicon 配置
+        ['link', { rel: 'icon', href: '/vuepress-starter/favicon.ico' }], // 添加 favicon 配置
     ],
     theme: defaultTheme({
             lang:'zh-CN',

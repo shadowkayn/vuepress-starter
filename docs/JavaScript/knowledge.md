@@ -1,4 +1,4 @@
-#### 一、模板字符串高阶用法
+### 一、模板字符串高阶用法
 #### 1、标签模板
 有如下代码：
 ```javascript
@@ -51,6 +51,48 @@ const btnClass = clsx("p-4", isPrimary && "bg-blue-500");
 function MyComponent() {
   return <button className={btnClass}>Click</button>;
 }
+```
+
+### 二、异步数据竞争态问题解决
+有一种场景，当多个tab页频繁切换过快时，会造成返回数据的顺序和请求的顺序不一致，导致数据错误<br>
+例如，在页面A中发起请求，快速切换页面，在页面B中发起请求，当页面A和页面B都返回数据时，页面A的数据会覆盖页面B的数据，导致页面A的数据错误
+![](/images/jsImages/1.jpg)
+```javascript
+const NOOP = () => {};
+
+// 封装一个取消请求的高阶函数，用来取消上一次异步请求
+function ceateCancelTask(asyncTask) {
+    // 1、首先创建一个空函数cancel
+    let cancel = NOOP; 
+    return (...args) => {
+        return new Promise((resolve, reject) => {
+            // 3、在这个时候取消上一次请求
+            // 也就是当上一次请求还没完成时,又收到了新的请求,这个时候重新调用ceateCancelTask请求
+            // 代码执行到这里时,执行取消上次请求,也就是执行cancel()
+            cancel();
+            // 2、给空函数赋值，用于取消上一次的请求，怎么取消？如下，将resolve 和 reject 置为 NOOP 就行
+            cancel = () => {
+                resolve = reject = NOOP;
+            };
+            asyncTask(...args).then(
+                (res) => resolve(res),
+                (err) => reject(err)
+            ) 
+        })
+    }
+}
+
+// 模拟封装的请求
+export const fetchData = ceateCancelTask(async (type) => {
+    return fetch(`http://xxx?type=${type}`).then(res => res.json())
+})
+
+fetchData('1').then((res) => {
+    console.log(res)
+})
+fetchData('2').then((res) => {
+    console.log(res)
+})
 ```
 
 
