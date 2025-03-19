@@ -110,5 +110,11 @@ export default defineUserConfig({
             },
             lastUpdated: false,
         }),
+    markdown: {
+        // 配置代码块高亮
+        extendMarkdown: (md) => {
+            md.use(require('markdown-it-prism'))
+        }
+    },
 })
 
