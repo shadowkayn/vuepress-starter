@@ -207,3 +207,135 @@ const submit = () => {
 };
 </script>
 ```
+
+
+### 二、封装一个全局loading指令,可绑定在任意容器上
+#### 1、在 src/components 目录下新建一个 Loading.vue 组件
+```vue
+<template>
+  <div class="loading-overlay">
+    <div class="loading-spinner"></div>
+  </div>
+</template>
+
+<script setup></script>
+
+<style scoped>
+  .loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #ccc;
+    border-top-color: #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+```
+
+#### 2、在src/directives/loadingDirective.js中注册指令
+```javascript
+import { createApp } from 'vue';
+import Loading from '@/components/layout/Loading.vue';
+
+const loadingDirective = {
+  mounted(el, binding) {
+    console.log(el, binding, 'el');
+    // 创建一个 Loading 实例
+    const app = createApp(Loading);
+    const instance = app.mount(document.createElement('div'));
+
+    // 绑定到元素的 `_loadingInstance` 属性，方便后续操作
+    el._loadingInstance = instance.$el;
+    el._loadingInstance.style.position = 'absolute';
+
+    // 确保父元素是 relative 以正确显示 loading
+    const position = getComputedStyle(el).position;
+    console.log(position, 'position');
+    if (position === 'static' || !position) {
+      el.style.position = 'relative';
+    }
+
+    // 初次绑定时，根据绑定值显示或隐藏 loading
+    if (binding.value) {
+      el.appendChild(el._loadingInstance);
+    }
+  },
+  updated(el, binding) {
+    // 只有值发生变化时才执行
+    if (binding.value !== binding.oldValue) {
+      // 显示 loading
+      if (binding.value) {
+        el.appendChild(el._loadingInstance);
+      } else {
+        // 隐藏 loading
+        el._loadingInstance.remove();
+      }
+    }
+  },
+  unmounted(el) {
+    // 指令卸载时，移除 loading 实例
+    el._loadingInstance?.remove();
+    delete el._loadingInstance;
+  }
+};
+
+export default loadingDirective;
+```
+
+#### 3、在src/directives/index.js中导出指令,所有封装指令都可以在这里导出，然后在main.js中统一注册
+```javascript
+import loadingDirective from '@/directives/laodingDirective';
+
+export default {
+    // 这里使用 install 方法，让 directives/index.js 作为一个 Vue 插件，方便在 main.js 中注册。
+    install(app) {
+        app.directive('loading', loadingDirective);
+    }
+};
+```
+
+
+#### 4、在main.js文件里面引入
+```javascript
+// 引入指令
+import directives from './directives';
+
+const app = createApp(App);
+app.use(directives);
+app.mount('#app');
+```
+
+#### 5、在需要的地方只是使用即可
+```vue
+<!--自定义指令loading-->
+<div class="loading-section">
+  <el-button @click="toggleLoading">切换 Loading</el-button>
+  <div class="loading-box" v-loading="isLoading">
+    <p>加载中的内容</p>
+  </div>
+</div>
+```
+v-loading指令用于显示或隐藏一个加载中的动画。它接收一个布尔值作为参数，表示是否显示加载中的动画。
+![](/images/vueImages/1.png)
