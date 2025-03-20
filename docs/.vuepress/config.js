@@ -17,16 +17,6 @@ export default defineUserConfig({
             // Public 文件路径
             logo: '/images/logo.jpg',
 
-            // 代码块高亮
-            enhanceAppFiles: [
-                {
-                    name: 'prism-theme',
-                    content: `
-            import 'prism-themes/themes/prism-material-dark.css';
-          `
-                }
-            ],
-
             // 导航栏
             navbar: [
                 // NavbarLink
