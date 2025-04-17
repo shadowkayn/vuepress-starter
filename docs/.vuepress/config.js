@@ -86,7 +86,7 @@ export default defineUserConfig({
                         text: "工程化",
                         collapsable: false, // 不折叠
                         children: [
-                            { text: "建设中", link: "/Engineering/knowledge.md" },
+                            { text: "开发场景", link: "/Engineering/knowledge.md" },
                             { text: "dev tips", link: "/Engineering/tips.md" },
                         ],
                     },
