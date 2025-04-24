@@ -339,3 +339,145 @@ app.mount('#app');
 ```
 v-loading指令用于显示或隐藏一个加载中的动画。它接收一个布尔值作为参数，表示是否显示加载中的动画。
 ![](/images/vueImages/1.png)
+
+
+### 三、树节点数据treeData筛选过滤
+树节点数据treeData筛选过滤，可以通过递归的方式实现。以下是一个简单的示例：
+
+以ant-vue组件库举例，封装一个通用的树节点选择器；筛选时可以根据节点的title进行筛选，过滤与关键字不相符的节点，且父节点自动展开
+```vue
+<script setup>
+import { SearchOutlined } from '@ant-design/icons-vue';
+import { debounce } from 'lodash-es';
+
+const props = defineProps({
+  showSearch: {
+    type: Boolean,
+    default: true
+  },
+  fieldNamesObj: {
+    type: Object,
+    default: () => ({
+      title: 'title',
+      key: 'key',
+      children: 'children'
+    })
+  },
+  treeData: {
+    type: Array,
+    default: () => []
+  }
+});
+
+const emits = defineEmits(['filterSearch']);
+const searchValue = ref('');
+const filterTreeData = ref([]);
+const expandedKeys = defineModel('expandedKeys', { type: Array, default: () => [] });
+const selectedKeys = defineModel('selectedKeys', { type: Array, default: () => [] });
+const checkedKeys = defineModel('checkedKeys', { type: Array, default: () => [] });
+
+watch(
+  () => props.treeData,
+  newData => {
+    filterTreeData.value = newData;
+  },
+  {
+    immediate: true
+  }
+);
+
+const handleSearch = debounce(e => {
+  const keyword = e.target?.value;
+
+  if (!keyword.trim()) {
+    expandedKeys.value = [];
+    filterTreeData.value = props.treeData;
+    emits('filterSearch', '');
+    return;
+  }
+
+  const { title, key, children } = props.fieldNamesObj;
+  // 存储匹配的节点 key（用于展开）
+  const matchedKeys = new Set();
+
+  // 递归过滤树数据，只保留匹配的节点
+  const filterNodes = nodes => {
+    return nodes.reduce((acc, node) => {
+      const isMatched = node[title].includes(keyword);
+
+      // 检查子节点是否有匹配
+      let filteredChildren = [];
+      if (node[children]) {
+        filteredChildren = filterNodes(node[children]);
+      }
+
+      // 如果当前节点或子节点匹配，则保留
+      if (isMatched || filteredChildren.length > 0) {
+        const newNode = {
+          ...node,
+          children: filteredChildren.length > 0 ? filteredChildren : undefined
+        };
+
+        // 记录匹配的 key
+        if (isMatched) matchedKeys.add(node[key]);
+        if (filteredChildren.length > 0) matchedKeys.add(node[key]); // 父节点也要展开
+
+        acc.push(newNode);
+      }
+
+      return acc;
+    }, []);
+  };
+
+  // 更新过滤后的树数据
+  filterTreeData.value = filterNodes(props.treeData);
+  // 展开所有匹配的节点
+  expandedKeys.value = Array.from(matchedKeys);
+
+  emits('filterSearch', keyword);
+}, 200);
+</script>
+
+<template>
+  <div>
+    <a-input
+      v-if="showSearch"
+      v-model:value="searchValue"
+      placeholder="请输入关键字搜索"
+      class="search-input"
+      style="margin-bottom: 8px"
+      allow-clear
+      @change="handleSearch"
+    >
+      <template #prefix>
+        <search-outlined />
+      </template>
+    </a-input>
+    <a-tree
+      v-model:expandedKeys="expandedKeys"
+      v-model:selectedKeys="selectedKeys"
+      v-model:checkedKeys="checkedKeys"
+      v-bind="$attrs"
+      checkable
+      :tree-data="filterTreeData"
+      :field-names="fieldNamesObj"
+    />
+  </div>
+</template>
+
+<style scoped lang="less"></style>
+```
+核心方法：***filterNodes()***
+
+使用时如下：
+```vue
+<template>
+  <CommonTreeSelect
+      v-model:expandedKeys="expandedKeys"
+      v-model:checkedKeys="checkedKeys"
+      :tree-data="treeData"
+      :fieldNamesObj="{ title: 'label', key: 'value', children: 'children' }"
+      @check="handleCheck"
+  />
+</template>
+```
