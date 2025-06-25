@@ -8,6 +8,37 @@
   --content-width: 1200px;
 }
 
+:root {
+  --vp-c-bg: url("../public/images/myImages/bg-login-basic.jpeg");
+  --vp-c-text: #fff;
+  //--vp-c-bg-alt: #F0F8FFFF;
+  --vp-c-bg-elv: #656a73;
+  --vp-c-text-mute: #fff;
+}
+
+
+[data-theme=dark] {
+  --vp-c-accent: #3dd68c;
+  --vp-c-accent-bg: #3aa675;
+  --vp-c-accent-hover: #349469;
+  --vp-c-accent-soft: rgb(16 185 129 / 16%);
+
+  --vp-c-bg: #272733;
+  --vp-c-bg-alt: #292935;
+  --vp-c-bg-elv: #313140;
+
+  --vp-c-text: rgb(235 235 245 / 86%);
+  --vp-c-text-mute: rgb(235 235 245 / 60%);
+  --vp-c-text-subtle: rgb(235 235 245 / 38%);
+  --vp-c-gutter: #000;
+  --vp-c-border: #3c3f44;
+  --vp-c-border-hard: #45484e;
+  --vp-c-shadow: rgb(0 0 0 / 30%);
+  --vp-c-control: rgb(101 117 133 / 12%);
+  --vp-c-control-hover: rgb(101 117 133 / 18%);
+  --vp-c-control-disabled: #363636;
+}
+
 /* 设置滚动条整体宽度 */
 ::-webkit-scrollbar {
   width: 8px;

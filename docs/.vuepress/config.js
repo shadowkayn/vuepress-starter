@@ -62,8 +62,8 @@ export default defineUserConfig({
                         text: "CSS",
                         collapsible: false, // 不折叠
                         children: [
-                            { text: "开发场景", link: "/css/daily.md" },
-                            { text: "知识点", link: "/css/knowledge.md" },
+                            { text: "开发场景", link: "/Css/daily.md" },
+                            { text: "知识点", link: "/Css/knowledge.md" },
                         ],
                     },
                     {

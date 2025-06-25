@@ -481,3 +481,131 @@ const handleSearch = debounce(e => {
   />
 </template>
 ```
+
+### 4、循环表单校验
+循环表单校验，使用场景：表单数据为动态生成，需要校验的表单数据为动态生成，且数量未知。
+<br />
+如果使用的是 [element-ui](https://element-plus.gitee.io/#/zh-CN/component/installation)
+```vue
+<template>
+  <div v-for="(item, index) in formList" :key="index">
+    <div
+        style="
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          "
+    >
+      {{ index + 1 }}
+      <img
+          src="@/assets/image/operation/icon_delete.png"
+          alt=""
+          style="cursor: pointer"
+          v-if="formList.length > 1"
+          @click="handleDeleteLineGroup(index)"
+      />
+    </div>
+    <el-form
+        :ref="`ruleForm_${index}`"
+        :rules="rules"
+        :model="item"
+        size="mini"
+        :key="`form_${index}`"
+    >
+      <el-form-item label-width="80px" label="经度：" prop="jd">
+        <el-input placeholder="请输入" v-model="item.jd" type="number" />
+      </el-form-item>
+      <el-form-item label-width="80px" label="纬度：" prop="wd">
+        <el-input placeholder="请输入" v-model="item.wd" type="number" />
+      </el-form-item>
+    </el-form>
+  </div>
+  <div class="add-btn">
+    <img
+        src="@/assets/image/add_duty.png"
+        alt=""
+        @click="addLineItem"
+        style="cursor: pointer"
+    />
+  </div>
+</template>
+
+<script>
+    export default {
+      methods: {
+        // 校验单个表单
+        validateForm(index) {
+          return new Promise((resolve) => {
+            const formEl = this.$refs[`ruleForm_${index}`][0];
+            formEl.validate((valid) => {
+              resolve(valid);
+            });
+          });
+        },
+
+        // 校验所有表单
+        async validateAllForms() {
+          const results = await Promise.all(
+              this.formList.map((_, index) => this.validateForm(index))
+          );
+          return results.every((valid) => valid);
+        },
+
+        // 表单提交
+        async handleSubmitLineGroup() {
+          const isValid = await this.validateAllForms();
+          if (isValid) {
+            this.$emit("addLineGroup", this.formList);
+            this.lineGroupvisible = false;
+            this.formList = [{ jd: "", wd: "" }];
+          }
+        },
+
+        // 表单删除
+        handleDeleteLineGroup(val) {
+          this.formList.splice(val, 1);
+        },
+        
+        // 表单添加
+        addLineItem() {
+          this.formList.push({
+            jd: "",
+            wd: "",
+          });
+        },
+      }
+    }
+</script>
+```
+<br />
+
+如果使用的是AntDesign Vue 组件，那么需要使用FormItem组件进行包裹，并设置rules属性进行校验。
+
+```vue
+<template>
+  <a-form ref="formRef" name="basic" :model="formState" layout="inline" autocomplete="off">
+    <div class="inspection-time-box">
+      <div
+          v-for="(item, index) in formState.inspectionTimeArr"
+          :key="`inspection_time_${index}`"
+          :ref="el => setInspectionFormRef(el, index)"
+      >
+        <a-form-item label-width="0" :name="['inspectionTimeArr', index, 'inspectionTime']" :rules="rules.inspectionTime">
+          <a-time-picker v-model:value="item.inspectionTime" :locale="locale" value-format="HH:mm:ss" />
+          <div class="operate-btn">
+            <img v-if="index === 0" src="@/assets/table/add.svg" alt="" @click="addInspectionTime" />
+            <img
+                v-if="formState.inspectionTimeArr.length > 1"
+                src="@/assets/deleteimg.png"
+                alt=""
+                @click="delInspectionTime(index)"
+            />
+          </div>
+        </a-form-item>
+      </div>
+    </div>
+  </a-form>  
+</template>
+```
+el-form-item 标签外面包裹一层div 用来循环字段，关键点在于name属性  **:name="['inspectionTimeArr', index, 'inspectionTime']"** , index为当前循环的索引，name属性为当前字段的属性名称，inspectionTimeArr为循环数组
