@@ -1,4 +1,4 @@
-### 一、命令式调用的Dialog弹窗
+### 1、命令式调用的Dialog弹窗
 #### 1、在 utils 目录新建一个 dialog.js 文件
 ```javascript
 import { ElDialog } from 'element-plus';
@@ -209,7 +209,7 @@ const submit = () => {
 ```
 
 
-### 二、封装一个全局loading指令,可绑定在任意容器上
+### 2、封装一个全局loading指令,可绑定在任意容器上
 #### 1、在 src/components 目录下新建一个 Loading.vue 组件
 ```vue
 <template>
@@ -341,7 +341,7 @@ v-loading指令用于显示或隐藏一个加载中的动画。它接收一个�
 ![](/images/vueImages/1.png)
 
 
-### 三、树节点数据treeData筛选过滤
+### 3、树节点数据treeData筛选过滤
 树节点数据treeData筛选过滤，可以通过递归的方式实现。以下是一个简单的示例：
 
 以ant-vue组件库举例，封装一个通用的树节点选择器；筛选时可以根据节点的title进行筛选，过滤与关键字不相符的节点，且父节点自动展开

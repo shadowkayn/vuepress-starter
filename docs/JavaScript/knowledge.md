@@ -1,5 +1,5 @@
-### 一、模板字符串高阶用法
-#### 1、标签模板
+### 1、模板字符串高阶用法
+#### 标签模板
 有如下代码：
 ```javascript
 function tag(strings, ...values) {
@@ -53,7 +53,7 @@ function MyComponent() {
 }
 ```
 
-### 二、异步数据竞争态问题解决
+### 2、异步数据竞争态问题解决
 有一种场景，当多个tab页频繁切换过快时，会造成返回数据的顺序和请求的顺序不一致，导致数据错误<br>
 例如，在页面A中发起请求，快速切换页面，在页面B中发起请求，当页面A和页面B都返回数据时，页面A的数据会覆盖页面B的数据，导致页面A的数据错误
 ![](/images/jsImages/1.jpg)
@@ -96,3 +96,75 @@ fetchData('2').then((res) => {
 ```
 
 
+### 3、常用的一些实用的JavaScript语法糖
+空值合并运算符 ??
+```javascript
+// 传统写法
+const name = user.name !== null && user.name !== undefined ? user.name : 'default';
+
+// 简写方式
+const name =user.name ??'default';
+```
+快速取整 ~~
+```javascript
+// 传统写法
+const floor = Math.floor(4.9);
+
+// 简写方式
+const floor = ~~4.9;
+```
+合并对象
+```javascript
+// 传统写法
+const merged = Object.assign({}, obj1, obj2);
+
+// 简写方式
+const merged = {...obj1, ...obj2};
+```
+短路求值
+```javascript
+// 传统写法
+if (condition) {
+    doSomething();
+}
+
+// 简写方式
+condition && doSomething();
+```
+字符串转数字
+```javascript
+// 传统写法
+const num = Number('123');
+
+// 简写方式
+const num =+ '123';
+```
+多重条件判断
+```javascript
+// 传统写法
+if(value ===1 || value===2 || value === 3){
+    // ...
+}
+// 简写方式
+if([1,2,3].includes(value)){
+    // ...
+}
+```
+快速幂运算
+```javascript
+// 传统写法
+Math.pow(2,3);
+
+// 简写方式
+2 ** 3;
+```
+交换变量值
+```javascript
+// 传统写法
+let temp = a;
+a = b;
+b = temp;
+
+// 简写方式
+[a,b]= [b,a];
+```

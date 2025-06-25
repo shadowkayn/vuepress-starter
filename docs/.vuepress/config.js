@@ -25,11 +25,11 @@ export default defineUserConfig({
                     link: '/',
                 },
                 {
-                    text: 'React',
-                    link: '/react/README.md',
+                    text: 'Articles',
+                    link: '/Articles/README.md',
                 },
                 {
-                    text: '组件库',
+                    text: 'Components',
                     link: '/components/README.md',
                 },
                 // NavbarGroup
@@ -83,6 +83,14 @@ export default defineUserConfig({
                         ],
                     },
                     {
+                        text: "React",
+                        collapsable: false, // 不折叠
+                        children: [
+                            { text: "开发场景", link: "/React/daily.md" },
+                            { text: "知识点", link: "/React/knowledge.md" },
+                        ],
+                    },
+                    {
                         text: "工程化",
                         collapsable: false, // 不折叠
                         children: [
@@ -91,7 +99,7 @@ export default defineUserConfig({
                         ],
                     },
                 ],
-                '/react':[
+                '/articles':[
                     {
                         text: '碎片化知识',
                         link:'',

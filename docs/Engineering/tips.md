@@ -1,4 +1,4 @@
-### **一、nvm管理工具**
+### **1、nvm管理工具**
 #### **1、官网下载nvm安装包**
 安装过程第一个路径设置是nvm安装地址，第二个路径设置是nodejs安装地址
 
@@ -29,7 +29,7 @@ nvm use 18  #使用node18
 ```
 
 
-### **二、配置ssh连接github、gitlab等代码管理仓库**
+### **2、配置ssh连接github、gitlab等代码管理仓库**
 #### **1.为 GitHub 和 GitLab 生成不同的 SSH 密钥**
 默认情况下，SSH 密钥存储在 ~/.ssh/id_rsa，但你可以为不同的账户创建单独的密钥。
 
@@ -150,7 +150,7 @@ git remote set-url origin git@gitlab.com:your_gitlab_username/repository.git
 
 
 
-### **三、本地分支关联远程分支**
+### **3、本地分支关联远程分支**
 #### **1. 将本地分支关联到远程已有的分支**
 假设你已经有一个远程分支（比如 origin/main），你希望将本地分支（例如 dev_newStyle）与它关联。
 

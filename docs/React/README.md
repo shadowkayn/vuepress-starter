@@ -1,6 +1,6 @@
 ## React
 
-### **一、redux基本使用**
+### **1、redux基本使用**
 #### **1. 首先，需要安装 Redux 及其 React 绑定库 react-redux：**
 ```shell
 npm install redux react-redux
@@ -114,7 +114,7 @@ export default App;
 
 如果创建了多个 reducer，可以用 combineReducers 来合并一个根 reducer
 
-### **二、redux中间件**
+### **2、redux中间件**
 
 #### **1. 什么是 Redux 中间件**
 Redux 中间件是一个函数，作用类似于 Express 或 Koa 中的中间件。它可以拦截、修改或扩展 dispatch 函数的行为，处理如异步操作、日志记录等任务。中间件位于 Action 发出和到达 Reducer 之间的这段流程中。
