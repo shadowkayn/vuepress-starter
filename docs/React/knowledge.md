@@ -250,3 +250,53 @@ Redux Thunk 是最常用的中间件之一，它允许你在 Action Creator 中�
 - 常见中间件：如 redux-thunk、redux-saga、redux-logger 等，用于处理异步操作、日志记录、调试等任务。
 - 配置中间件：通过 applyMiddleware 将中间件添加到 Redux Store 中。
   这种模式使得 Redux 更加灵活，可以应对各种复杂的状态管理需求。
+
+
+### **3、在React Hooks里实现类似生命周期效果**
+***1. componentDidMount 效果***
+<br />
+使用 useEffect 并传递空依赖数组：
+```jsx
+  useEffect(() => {
+  // 这里的代码会在组件挂载后执行
+    console.log('Component did mount');
+    
+    return () => {
+        // 可选的清理函数，相当于 componentWillUnmount
+    };
+    }, []); // 空数组表示只在挂载时运行一次
+```
+
+***2. componentDidUpdate 效果***
+<br />
+使用 useEffect 并指定依赖项：
+```jsx
+  useEffect(() => {
+    // 这里的代码会在依赖项变化时执行
+    console.log('Component did update');
+  }, [someProp, someState]); // 指定依赖项
+```
+
+***3. componentWillUnmount 效果***
+<br />
+在 useEffect 的清理函数中实现：返回一个函数，在组件卸载时执行清理逻辑。
+```jsx
+  useEffect(() => {
+    return () => {
+      // 这里的代码会在组件卸载前执行
+      console.log('Component will unmount');
+    };
+  }, []);
+```
+
+***4. shouldComponentUpdate 效果***
+<br />
+使用 React.memo 或 useMemo 进行性能优化：
+```jsx
+  const MyComponent = React.memo(function MyComponent(props) {
+    // 组件内容
+  }, (prevProps, nextProps) => {
+    // 返回 true 表示不重新渲染，false 表示需要重新渲染
+    return prevProps.someProp === nextProps.someProp;
+  }); 
+```
