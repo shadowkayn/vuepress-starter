@@ -114,3 +114,145 @@ async function loadDashboard(userId) {
     }
 }
 ```
+
+### 2、从oss下载文件直接预览或者手动保存预览
+***1.首先，axios封装好api，接受文件流***
+```javascript
+export function downloadFile(fileName) {
+    return axios({
+        method: 'get',
+        responseType: 'blob', // 关键点，接受的是文件流
+        url: `${API_BASE_PREFIX}${url}`,
+        params: params,
+        headers: {
+            [TOKEN_HEADER_NAME]: getToken()
+        }
+    });
+}
+```
+
+***2.下载文件并预览***
+<br />
+file.js
+```javascript
+import { CommonApi } from '@/api/CommonApi';
+import { message } from 'ant-design-vue';
+
+// 文件下载主函数
+export const downloadFile = async (blobData, fileName = '下载文件') => {
+  try {
+    // 创建下载链接
+    const url = window.URL.createObjectURL(blobData);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = fileName || 'download'; // 默认文件名
+    // 触发下载
+    document.body.appendChild(a);
+    a.click();
+
+    // 清理
+    window.setTimeout(() => {
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    }, 100);
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+// 不能直接预览的文件，需强制下载
+async function handleBlobDownload(blob, filename = '下载文件') {
+  const blobUrl = URL.createObjectURL(blob);
+
+  // 根据 blob.type 判断是否可预览
+  const previewableTypes = [
+    'application/pdf',
+    'image/jpeg',
+    'image/png',
+    'text/plain',
+    'application/vnd.ms-excel', // .xls
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' // .xlsx
+  ];
+
+  if (previewableTypes.includes(blob.type)) {
+    // 打开新标签页预览
+    window.open(blobUrl);
+  } else {
+    // 不支持预览，则强制下载
+    await downloadFile(blob, filename);
+  }
+}
+
+// 兼容后端返回带签名的 URL 编码字符串
+function extractFilename(rawFilename) {
+  try {
+    const decoded = decodeURIComponent(rawFilename || '');
+    const withoutParams = decoded.split('?')[0];
+    return withoutParams.split('/').pop() || '未命名文件';
+  } catch (e) {
+    console.warn('文件名解析失败，使用默认名', e);
+    return '未命名文件';
+  }
+}
+
+// 预览文件主函数
+export async function handleFilePreview(ossUrl) {
+  try {
+    const response = await CommonApi.downLoadFile({ ossUrl });
+
+    const blob = response.data;
+    let filename = '未命名文件';
+
+    const disposition = response.headers?.['content-disposition'];
+    if (disposition) {
+      const match = disposition.match(/filename="?([^"]+)"?/);
+      if (match && match[1]) {
+        filename = extractFilename(match[1]); // 提取文件名
+      }
+    }
+
+    await handleBlobDownload(blob, filename);
+  } catch (error) {
+    console.error('文件下载失败', error);
+    message.error('文件获取失败，请稍后重试');
+  }
+}
+```
+
+***3.使用示例：直接调用即可***
+```javascript
+const openPicOrVideo = async url => {
+    if (url) {
+        await handleFilePreview(url);
+    }
+};
+```
+
+### 3、上传文件api封装
+```javascript
+/**
+ * 文件上传
+ * @param url 上传地址
+ * @param extraParams 额外的参数，后端需要获取的参数
+ * @returns {*}
+ */
+export function uploadFile(url, extraParams = {}) {
+    // 一般上传接口的入参格式都是formData
+    const formData = new FormData();
+    // 添加其他参数（如果需要）
+    Object.keys(extraParams).forEach(key => {
+        formData.append(key, extraParams[key]);
+    });
+    
+    return axios({
+        method: 'post',
+        url: `${API_BASE_PREFIX}${url}`,
+        data: formData,
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            [TOKEN_HEADER_NAME]: getToken()
+        }
+    });
+}
+```
