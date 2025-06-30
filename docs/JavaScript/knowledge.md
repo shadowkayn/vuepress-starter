@@ -168,3 +168,178 @@ b = temp;
 // 简写方式
 [a,b]= [b,a];
 ```
+
+
+### 4、五个场景务必使用function
+****箭头函数并不能完全替代传统的 function 关键字。过度滥用箭头函数，尤其是在不理解其工作原理的情况下，会导致难以追踪的 bug 和意外行为。this 的指向是 JavaScript 中最核心也最容易混淆的概念之一，而箭头函数和传统 function 在 this 的处理上有着本质区别。****
+<br />
+****核心区别速记：****
+- function: this 的值是在函数被调用时动态决定的，取决于谁调用了它。
+- => (箭头函数): 它没有自己的 this。它会捕获其定义时所在上下文的 this 值，这个绑定是固定的，不会改变。
+
+<br />
+
+***场景一：对象的方法 (Object Methods)***
+```javascript
+// 错误示范
+const person = {
+    name: '老王',
+    age: 30,
+    sayHi: () => {
+        // 这里的 this 继承自全局作用域 (在浏览器中是 window)，而不是 person 对象
+        console.log(`大家好，我是 ${this.name}`);
+    }
+};
+
+person.sayHi(); // 输出: "大家好，我是 " (或者 "大家好，我是 undefined")
+
+
+// 正确示范（使用function）
+const person = {
+    name: '老王',
+    age: 30,
+    sayHi: function() {
+        // 这里的 this 在调用时被动态绑定为 person 对象
+        console.log(`大家好，我是 ${this.name}`);
+    },
+    // ES6 对象方法简写形式，本质上也是一个 function
+    sayHiShorthand() {
+        console.log(`大家好，我是 ${this.name}`);
+    }
+};
+
+person.sayHi(); // 输出: "大家好，我是 老王"
+person.sayHiShorthand(); // 输出: "大家好，我是 老王"
+
+
+// 结论： 当我们为对象定义一个需要引用该对象自身属性的方法时，请使用 function 或 ES6 方法简写。
+```
+
+***场景二：DOM 事件监听器 (Event Listeners)***
+在使用 addEventListener 为 DOM 元素绑定事件时，我们常常需要访问触发该事件的元素本身（例如，修改它的样式、内容等）。传统 function 会自动将 this 绑定到该 DOM 元素上。
+```javascript
+// 错误示范
+// 箭头函数再次从外部作用域捕获 this，导致我们无法直接操作点击的按钮。
+const button = document.getElementById('myButton');
+
+button.addEventListener('click', () => {
+    // 这里的 this 依然是 window 或 undefined，而不是 button 元素
+    this.classList.toggle('active'); // TypeError: Cannot read properties of undefined (reading 'classList')
+});
+
+// 正确的写法
+const button = document.getElementById('myButton');
+
+button.addEventListener('click', function() {
+    // 在这里，this 被正确地绑定为触发事件的 button 元素
+    console.log(this); // <button id="myButton">...</button>
+    this.classList.toggle('active'); // 正常工作
+});
+
+// 结论： 在 DOM 事件监听回调中，如果我们需要用 this 来引用触发事件的元素，请使用 function。
+```
+
+***场景三：构造函数 (Constructor Functions)***
+箭头函数在设计上就不能作为构造函数使用。如果我们尝试用 new 关键字来调用一个箭头函数，JavaScript 会直接抛出错误。这是因为构造函数需要有自己的 this 来指向新创建的实例，并且需要一个 prototype 属性，而箭头函数两者都不具备。
+```javascript
+// 错误示例
+constCar=(brand)=>this.brand = brand;
+const myCar = new Car('Tesla');// Uncaught TypeError: Car is not a constructor
+
+// 正确示例
+// 使用function 作为构造函数
+function Car(brand){
+    this.brand = brand;
+}
+
+const myCar = new Car('Tesla');
+console.log(myCar.brand);   //输出:"Tesla"
+// 或者使用现代的 class 语法(其 constructor'也是一个特殊的方法
+class Bike {
+    constructor(brand){
+        this.brand = brand;
+    }
+}
+const myBike = new Bike('Giant');
+console.log(myBike.brand);  //输出:"Giant"
+
+// 结论： 永远不要用箭头函数作为构造函数。请使用 function 或 class。
+```
+
+***场景四：原型方法 (Prototype Methods)***
+与对象方法类似，当我们为构造函数的原型 prototype 添加方法时，我们也希望 this 指向调用该方法的实例。
+```javascript
+// 错误示范
+function Person(name){
+    this.name = name;
+}
+
+Person.prototype.greet = ()=>{
+    // this 捕获的是定义 greet 时的全局作用aScrp
+    console.log(`Hello,my name is ${this.name}`);
+}
+const alice = new Person('Alice');
+alice.greet();  //输出:"Hello,my name is"
+
+
+// 正确示范
+function Person(name){
+    this.name = name;
+}
+
+Person.prototype.greet = function(){
+    // this 指向调用 greet 方法的实例(alice)
+    console.log(`Hello,my name is ${this.name}`);
+};
+
+const alice = new Person('Alice');
+alice.greet();  //输出:"Hello, my name is Alice'
+
+// 结论： 在 prototype 上定义方法时，请使用 function，以确保 this 指向类的实例。
+```
+
+***场景五：需要 arguments 对象的函数***
+箭头函数没有自己的 arguments 对象。arguments 是一个类数组对象，包含了函数被调用时传入的所有参数。如果我们在箭头函数内部访问 arguments，它只会访问到外层（如果存在）传统函数的 arguments 对象。
+```javascript
+// 错误示范
+const myFunc=()=>{
+    console.log(arguments);  // Uncaught ReferenceError: arguments is not defined
+}
+myFunc(1,2,3);
+
+// 正确示范
+function myFunc(){
+    console.log(arguments);  // 输出:Arguments(3)[1, 2,3,callee: f, Symbol(ymbol.iterator): f]
+    // 可以像数组一样操作它
+    const args = Array.from(arguments);
+    console.log(args.join(','));    // 输出:"1，2，3"
+}
+    
+myFunc(1,2,3);
+```
+
+***注意：使用剩余参数，箭头函数也可以***
+```javascript
+const myFuncWithRest=(...args)=>{
+    console.log(args);  // 输出: [1,2,3]
+}
+myFuncwithRest(1,2,3)
+```
+
+***最佳使用场景***
+- 回调函数：尤其是在 map, filter, forEach 等数组方法中，或者在 setTimeout, Promise.then 内部，当我们需要保持外部 this 上下文时。
+
+```javascript
+const timer = {
+  seconds: 0,
+  start() {
+    setInterval(() => {
+      // 这里的 this 正确地指向 timer 对象，因为箭头函数捕获了 start 方法的 this
+      this.seconds++;
+      console.log(this.seconds);
+    }, 1000);
+  }
+};
+
+timer.start();
+```

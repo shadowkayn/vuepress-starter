@@ -256,3 +256,81 @@ export function uploadFile(url, extraParams = {}) {
     });
 }
 ```
+
+### 4、JS实现图片懒加载，10行代码实现
+现代浏览器提供了 Intersection Observer API，让我们得以用一种极其高效和简洁的方式来实现懒加载。多简洁？核心逻辑只需 10 行代码。
+***1、HTML结构***
+<br />
+懒加载的原理很简单：我们不直接将图片的 URL 放在 src 属性里，而是先放在一个自定义的 data-* 属性（如 data-src）中。src 属性可以指向一个极小的占位符图片（比如一个 1x1 像素的透明 GIF 或低质量的模糊图），以避免出现 broken image 图标。
+```html
+<!DOCTYPE html>
+<html lang="'en'">
+    <head>
+        <meta charset="UTF-8">
+        <title>现代图片懒加载</title>
+        <style>
+        /*给图片一个最小高度，以便在加载前占据空间 */
+            img {
+                display: block;
+                margin-bottom: 50px;
+                min-height: 200px;
+                background-color: #f0f0f0; /*简单的占位背景色*/
+            }
+        </style>
+    </head>
+    <body>
+        <h1>向下滚动查看图片懒加载效果</h1>
+        <!-- 使用 class="lazy” 来标识需要懒加载的图片 -->
+        <!--src 指向一个占位符，data-src存放真实图片地址 -->
+        <img class="lazy" src="placeholder.gif" data-src="https://source.example.com/random/80x600?nature" alt="azy Loaded Image 1">
+        <img class="lazy" src="placeholder.gif" data-src="https://source.example.com/random/800x600?city" alt="Lazy Loaded Image 2">
+        <img class="lazy" src="placeholder.gif" data-src="https://source.example,com/random/800x600?people" alt="Lazy Loaded Image 3">
+        <img class="lazy" src="placeholder.gif" data-src="https://source.example,com/random/800x600?tech" alt="Lazy Loaded Image 4">
+        <img class="lazy" src="placeholder.gif" data-src="https://source.example.com/random/800x600?space" alt="Lazy Loaded Image 5">
+        
+        <script src="lazy-load.js"></script>
+    </body>
+</html>
+```
+***2、js代码如下***
+```javascript
+// 1.获取所有需要懒加载的图片
+const lazyImages =document.querySelectorAll('.lazy');
+
+// 2.创建-个 Intersection0bserver 实例
+const callback = (entries,observer)=>{
+    // 3.遍历所有被观察的元素
+    entries.forEach(entry=>{
+        // 4.如果元素进入视口
+        if(entry.isIntersecting) {
+            const img = entry.target;
+            // 5.将data-src 的值赋给 
+            srcimg.src = img.dataset.src;
+            // 6.移除'lazy'类，可选，但便于管理
+            img.classList.remove('lazy');
+            // 7.停止观察该图片，释放资源
+            observer.unobserve(img);
+        }
+    })
+}
+const observer = new Intersection0bserver(callback);
+
+// 8.让 observer 开始观察所有懒加载图片
+lazyImages.forEach(image => {
+    observer.observe(image);
+});
+```
+
+***3.优化：预加载***
+<br />
+Intersection Observer 还允许我们传入一个配置对象，来更精细地控制“交叉”的定义。其中 rootMargin 属性非常有用。
+<br />
+rootMargin 可以在视口（root）的每一边添加一个“外边距”，提前或延迟触发回调。例如，我们可以让图片在距离进入视口还有 200px 时就开始加载。
+```javascript
+const options = {
+    root: null, // 使用浏览器视口作为根
+    rootMargin: '0px 0px 200px 0px', //在底部增加 200px 的外边距
+    threshold: 0 //只要有 1 像素交叉就触发
+};
+const observer = new Intersection0bserver(callback, options);
+```
