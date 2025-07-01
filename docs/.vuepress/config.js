@@ -1,7 +1,7 @@
-import { viteBundler } from '@vuepress/bundler-vite'
-import { defaultTheme } from '@vuepress/theme-default'
 import { defineUserConfig } from 'vuepress'
-
+import { defaultTheme } from '@vuepress/theme-default'
+import { viteBundler } from '@vuepress/bundler-vite'
+import { searchPlugin } from '@vuepress/plugin-search'
 
 export default defineUserConfig({
     bundler: viteBundler(),
@@ -10,6 +10,10 @@ export default defineUserConfig({
         ['link', { rel: 'icon', href: '/vuepress-starter/favicon.ico' }], // 添加 favicon 配置
     ],
     theme: defaultTheme({
+            // 启用搜索框
+            search: true,
+            // 搜索建议条目数（默认为 5）
+            searchMaxSuggestions: 10,
             lang:'zh-CN',
             title: 'KAYN Blogs',
             description: '个人博客-用来学习记录',
@@ -114,5 +118,17 @@ export default defineUserConfig({
             md.use(require('markdown-it-prism'));
         }
     },
+    // 插件注册
+    plugins: [
+        searchPlugin({
+            // 这里的配置项和 V2 官方文档一致：
+            // - hotKeys: 搜索框快捷键，默认 ['s', '/']
+            // - locales: 不同路径下的 placeholder
+            // - maxSuggestions: 最大结果数（默认 5）
+            maxSuggestions: 10,
+            // 如果你只想搜索部分页面，还可以：
+            // isSearchable: page => page.path !== '/'
+        }),
+    ],
 })
 
