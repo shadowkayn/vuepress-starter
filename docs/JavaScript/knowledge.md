@@ -343,3 +343,122 @@ const timer = {
 
 timer.start();
 ```
+
+### 5、这些常见的数组操作，可能导致性能瓶颈
+我们每天都在使用 <font color="red"> `map` </font>, <font color="red"> `filter` </font>, <font color="red"> `reduce` </font> 等方法，享受着函数式编程带来的便利和优雅。
+<br />
+然而，优雅的背后可能隐藏着性能的潜在风险。在处理小规模数据时，这些问题微不足道，但当我们的应用需要处理成百上千，甚至数万条数据时，一些看似无害的操作可能会变成压垮骆驼的最后一根稻草，导致页面卡顿、响应迟缓。
+<br />
+**1. 不必要的循环和中间数组**
+<br />
+这是最常见也最容易被忽视的问题。考虑这样一个场景：我们需要从一个用户列表中，筛选出所有激活状态（isActive）的用户，并且只提取他们的名字（name）。
+<br />
+很多开发者会这样写：
+```javascript
+const users = [/* ... 一个包含 10,000 个用户的数组 ... */];
+
+// 写法一：链式调用
+const activeUserNames = users
+    .filter(user => user.isActive) // 第一次循环，生成一个中间数组
+    .map(user => user.name);       // 第二次循环，在中间数组上操作
+
+console.log(activeUserNames.length);
+```
+这段代码清晰、易读，但它存在一个性能问题：它循环了两次，并创建了一个临时的中间数组。
+<br />
+- `filter` 方法会遍历所有 10,000 个用户，创建一个新的数组（比如包含 5,000 个激活用户）。
+<br />
+- `map` 方法会再次遍历这个包含 5,000 个用户的中间数组，提取名字，并最终生成结果数组。总共的迭代次数是 10,000 + 5,000 = 15,000 次。
+
+
+
+**优化方案：一次循环搞定**
+
+我们可以使用 `reduce` 或者一个简单的 `for循环`，只遍历一次数组就完成所有工作。
+```javascript
+// 使用reduce
+const activeUserNames = users.reduce((acc, user) => {
+    if (user.isActive) {
+        acc.push(user.name);
+    }
+    return acc;
+},[]);
+
+// 使用 for...of (通常性能更好，更易读)
+const activeUserNames = [];
+for (const user of users) {
+    if (user.isActive) {
+        activeUserNames.push(user.name);
+    }
+}
+
+// 这两种优化方法都只进行了 10,000 次迭代，并且没有创建任何不必要的中间数组。在数据量巨大时，性能提升非常显著。
+```
+
+<br />
+
+**2. <font color='red'> `unshift` </font> 和 <font color='red'> `shift` </font> —— 数组头部的“昂贵”操作**
+我们需要在数组的开头添加或删除元素时，很自然地会想到 `unshift` 和 `shift`。
+<br />
+但这两个操作在性能上非常“昂贵”。JavaScript 的数组在底层是以连续的内存空间存储的。
+- 当我们 `unshift` 一个新元素时，为了给这个新元素腾出位置，数组中所有现有元素都需要向后移动一位。
+- 同样，当我们 `shift` 删除第一个元素时，为了填补空缺，所有后续元素都需要向前移动一位。
+<br />
+想象一下在电影院里，我们坐在第一排，然后一个新人要挤到我们左边的 0 号位置。整排的人都得挪动屁股！数据量越大，这个“挪动”的成本就越高。
+
+```javascript
+const numbers=[/*···100,000个数字..·*/];
+// 极其缓慢的操作!
+for (let i = 0; i < 1000; i++){
+ numbers.unshift(i); //每次操作都要移动所有现有元素
+}
+```
+
+**优化方案：用 `push` 和 `pop`，或者先 `reverse`**    
+- **从尾部操作**：`push` 和 `pop`  只操作数组的末尾，不需要移动其他元素，因此速度极快（O(1) 复杂度）。如果业务逻辑允许，尽量将操作改为在数组尾部进行。
+- **先收集，再反转**：如果我们确实需要在开头添加一堆元素，更好的办法是先把它们 `push` 进一个临时数组，然后通过 `concat` 或扩展语法合并，或者最后进行一次 `reverse`。
+```javascript
+const numbers = [/* ... 100,000 个数字 ... */];
+const newItems = [];
+
+for (let i = 0; i < 1000; i++) {
+    newItems.push(i);   // 在新数组尾部添加，非常快
+}
+
+// 最终合并，比 1000 次 unshift 快得多
+const finalArray = newItems.reverse().concat(numbers);
+```
+
+
+<br />
+
+**3. 滥用<font color='red'> `includes` </font>,<font color='red'> `indexOf` </font>,<font color='red'> `find` </font>**
+在循环中查找一个元素是否存在于另一个数组中，是一个非常常见的需求
+```javascript
+const productIds = [/*1,000个ID.-*/];
+const productsInStock = [/*:5,000个有库存的产品对象”。*/];
+// 性能糟糕的写法
+const availableProducts = productsInStock.filter(product => 
+    productIds.includes(product,id) //每次 filter 都要在 productIds 中搜索一遍
+) 
+```
+这段代码的问题在于，`filter` 每遍历一个库存产品，`includes` 就要从头到尾搜索 `productIds` 数组来查找匹配项。如果 `productIds` 很大，这个嵌套循环的计算量将是 <font color='red'> `5000 * 1000` </font>，非常恐怖
+
+**优化方案：使用 `Set` 或 `Map` 创建查找表**
+`Set` 和 `Map` 数据结构在查找元素方面具有天然的性能优势。它们的查找时间复杂度接近 O(1)，几乎是瞬时的，无论集合有多大。
+<br />
+我们可以先把用于查找的数组转换成一个 `Set`。
+```javascript
+const productIds = [/* ... 1,000 个 ID ... */];
+const productsInStock = [/* ... 5,000 个有库存的产品对象 ... */];
+
+// 1. 创建一个 Set 用于快速查找
+const idSet = new Set(productIds);  // 这一步很快
+
+// 2. 在 filter 中使用 Set.has()
+const availableProducts = productsInStock.filter(product =>
+     idSet.has(product.id)  // .has() 操作近乎瞬时完成
+);
+
+// 通过一次性的转换，将一个嵌套循环的性能问题，优化成了一个单次循环，性能提升是数量级的。
+```
