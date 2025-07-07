@@ -6,6 +6,7 @@
   --vp-c-accent-hover: #863b6a;
   --sidebar-width: 15rem;
   --content-width: 1200px;
+  --search-input-width: 12rem !important;
 }
 
 :root {
@@ -63,6 +64,10 @@
   --vp-c-control: rgb(101 117 133 / 12%);
   --vp-c-control-hover: rgb(101 117 133 / 18%);
   --vp-c-control-disabled: #363636;
+
+  .search-box input {
+    border: 1px solid #aaa;
+  }
 }
 
 /* 设置滚动条整体宽度 */
