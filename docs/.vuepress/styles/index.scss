@@ -17,6 +17,12 @@
   --vp-c-bg: #F0F8FFFF;
   --vp-c-bg-alt: #F0F8FFFF;
   --vp-c-text-mute: #fff;
+  p {
+    font-size: 16px;
+  }
+  span {
+    font-size: 14px;
+  }
 }
 
 .vp-page {
@@ -27,6 +33,7 @@
 
 .vp-page::before {
   content: '';
+  min-height: 100vh;
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
   background: url('/vuepress-starter/images/myImages/bg-login-basic.jpeg');
