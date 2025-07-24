@@ -4,7 +4,7 @@
   --vp-c-accent: #da3f8c;
   --vp-c-accent-bg: #bb5bb8;
   --vp-c-accent-hover: #863b6a;
-  --sidebar-width: 15rem;
+  --sidebar-width: 16rem;
   --content-width: 1200px;
   --search-input-width: 12rem !important;
 }
@@ -24,6 +24,9 @@
   span {
     font-size: 14px;
   }
+  h3 span {
+    font-size: 18px;
+  }
 }
 
 .vp-page {
@@ -41,6 +44,22 @@
   opacity: 0.9;
   z-index: -1;
   pointer-events: none;
+}
+
+.vp-sidebar {
+  .vp-sidebar-items {
+    li {
+      &:nth-child(1) {
+        p {
+          font-style: italic;
+          font-family: YouSheBiaoTiHei;
+          font-size: 1.3em;
+          white-space: pre-line;
+          color: #eebd5b;
+        }
+      }
+    }
+  }
 }
 
 

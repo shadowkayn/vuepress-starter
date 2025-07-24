@@ -38,11 +38,11 @@ export default defineUserConfig({
                 },
                 // NavbarGroup
                 {
-                    text: '建设中',
+                    text: 'Constructing',
                     prefix: '/loading',
                     children: [
                         { text: 'Github', link: 'https://github.com/mqyqingfeng' },
-                        { text: '掘金', link: 'https://juejin.cn/user/712139234359182/posts' }
+                        { text: 'JueJin', link: 'https://juejin.cn/user/712139234359182/posts' }
                     ],
                 },
             ],
@@ -60,7 +60,7 @@ export default defineUserConfig({
                 '/': [
                     // SidebarItem
                     {
-                        text: '欢迎回来',
+                        text: 'Welcome to my \nMickey Mouse House !',
                     },
                     {
                         text: "CSS",

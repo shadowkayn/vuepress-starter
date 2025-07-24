@@ -345,7 +345,7 @@ timer.start();
 ```
 
 ### 5、这些常见的数组操作，可能导致性能瓶颈
-我们每天都在使用 <font color="red"> `map` </font>, <font color="red"> `filter` </font>, <font color="red"> `reduce` </font> 等方法，享受着函数式编程带来的便利和优雅。
+我们每天都在使用 <font color="#f08d49"> `map` </font>, <font color="#f08d49"> `filter` </font>, <font color="#f08d49"> `reduce` </font> 等方法，享受着函数式编程带来的便利和优雅。
 <br />
 然而，优雅的背后可能隐藏着性能的潜在风险。在处理小规模数据时，这些问题微不足道，但当我们的应用需要处理成百上千，甚至数万条数据时，一些看似无害的操作可能会变成压垮骆驼的最后一根稻草，导致页面卡顿、响应迟缓。
 <br />
@@ -397,7 +397,7 @@ for (const user of users) {
 
 <br />
 
-**2. <font color='red'> `unshift` </font> 和 <font color='red'> `shift` </font> —— 数组头部的“昂贵”操作**
+**2. <font color='#f08d49'> `unshift` </font> 和 <font color='#f08d49'> `shift` </font> —— 数组头部的“昂贵”操作**
 我们需要在数组的开头添加或删除元素时，很自然地会想到 `unshift` 和 `shift`。
 <br />
 但这两个操作在性能上非常“昂贵”。JavaScript 的数组在底层是以连续的内存空间存储的。
@@ -432,7 +432,7 @@ const finalArray = newItems.reverse().concat(numbers);
 
 <br />
 
-**3. 滥用<font color='red'> `includes` </font>,<font color='red'> `indexOf` </font>,<font color='red'> `find` </font>**
+**3. 滥用<font color='#f08d49'> `includes` </font>,<font color='#f08d49'> `indexOf` </font>,<font color='#f08d49'> `find` </font>**
 在循环中查找一个元素是否存在于另一个数组中，是一个非常常见的需求
 ```javascript
 const productIds = [/*1,000个ID.-*/];
@@ -442,7 +442,7 @@ const availableProducts = productsInStock.filter(product =>
     productIds.includes(product,id) //每次 filter 都要在 productIds 中搜索一遍
 ) 
 ```
-这段代码的问题在于，`filter` 每遍历一个库存产品，`includes` 就要从头到尾搜索 `productIds` 数组来查找匹配项。如果 `productIds` 很大，这个嵌套循环的计算量将是 <font color='red'> `5000 * 1000` </font>，非常恐怖
+这段代码的问题在于，`filter` 每遍历一个库存产品，`includes` 就要从头到尾搜索 `productIds` 数组来查找匹配项。如果 `productIds` 很大，这个嵌套循环的计算量将是 <font color='#f08d49'> `5000 * 1000` </font>，非常恐怖
 
 **优化方案：使用 `Set` 或 `Map` 创建查找表**
 `Set` 和 `Map` 数据结构在查找元素方面具有天然的性能优势。它们的查找时间复杂度接近 O(1)，几乎是瞬时的，无论集合有多大。
@@ -475,7 +475,7 @@ for( let i = 0; i<5; i++ ) {
 
 //神仙用法:Array.from()
 const arr2 = Array.from({ length:5 },(value, index) => index);
-console.log(arr2);  //[0,1，2，3，4]
+console.log(arr2);  // [0,1，2，3，4]
 ```
 
 **用法二：生成特定规则的数组**
@@ -547,3 +547,68 @@ const alphabet = Array.from({ length: 26 }, (_, i) => {
 console.log(alphabet);
 // ["A", "B", "C", ..., "Z"]
 ```
+
+### 7、Array.prototype.with(index, value) 让数组操作性能翻倍！
+在前端开发中，尤其是在使用 React 或 Vue 等现代框架时，我们被反复告知一个黄金法则：<font color='#f08d49'> **不要直接修改状态（Don’t mutate state）** </font> 。这意味着，当我们需要更新一个数组中的某个元素时，我们不能这样做：
+```javascript
+// ❌ 错误的做法！这会直接修改原始数组
+const state = ['a', 'b', 'c', 'd'];
+state[2] = 'x'; // 这是一个“突变” (mutation)
+```
+为什么？因为这会破坏状态的可预测性，让框架的变更检测机制“失灵”，导致各种难以追踪的 Bug。
+<br />
+为了遵循“不可变性”（Immutability）原则，我们多年来一直依赖一些经典的“曲线救国”方案。但浏览器已经悄悄地支持了一个全新的原生 API，它不仅让代码更优雅，还能在某些场景下让性能得到显著提升。
+它就是 —— <font color='#f08d49'> **Array.prototype.with(index, value)** </font> 。
+<br />
+在 `with()` 出现之前，要“不可变地”更新数组中的一个元素，我们通常有两种主流方法：
+<br />
+方法一：使用 `map()`
+```javascript
+const oldArray = ['apple','banana','orange','grape'];
+const newArray = oldArray.map((item,index) => {
+    if(index === 2) {
+        return 'mango'; //在指定位置返回新值
+    }
+    return item;    // 其他位置返回原值});
+});
+console.log(newArray);  //['apple','banana','mango'，'grape']
+console.log(oldArray);  //['apple','banana','orange'，'grape'](未被改变)
+
+// 优点：非常直观，函数式编程的典范。
+// 缺点：性能开销大。即使我们只改变一个元素，map() 依然会遍历整个数组，从头到尾创建一个新数组。当数组包含成千上万个元素时，这种浪费是显而易见的。
+```
+方法二：使用展开语法 `...` 或 `slice()`
+```javascript
+const oldArray = ['apple', 'banana', 'orange', 'grape'];
+
+// 使用展开语法
+const newArray = [...oldArray]; // 1. 创建一个浅拷贝
+newArray[2] = 'mango'; // 2. 修改拷贝后的数组
+
+// 或者使用 slice()
+// const newArray = oldArray.slice();
+// newArray[2] = 'mango';
+
+console.log(newArray); // ['apple', 'banana', 'mango', 'grape']
+console.log(oldArray); // ['apple', 'banana', 'orange', 'grape'] (未被改变)
+
+// 优点：比 map() 更直接，意图更清晰。
+// 缺点：代码有点啰嗦，需要两步操作（先复制，再赋值）。而且，它同样需要完整地遍历并复制整个原始数组，性能瓶颈依然存在。
+```
+现在，让我们看看 `with()` 是如何将上述操作简化为一步的。
+<br />
+`with(index, value)` 方法接收两个参数：要替换的元素的索引和新值。它会返回一个全新的数组，其中指定索引处的元素已被替换，而原始数组保持不变。
+```javascript
+const oldArray = ['apple', 'banana', 'orange', 'grape'];
+
+const newArray = oldArray.with(2, 'mango');
+
+console.log(newArray); // ['apple', 'banana', 'mango', 'grape']
+console.log(oldArray); // ['apple', 'banana', 'orange', 'grape'] (完美！原始数组安然无恙)
+```
+
+<br />
+
+总结：<font color='#f08d49'>`with()`</font> 向 JavaScript 引擎传递了一个更明确的信号。当我们使用 <font color='#f08d49'>`[...oldArray]`</font>  时，我们告诉引擎：“我需要一个这个数组的完整克隆品，所有元素都得复制一遍。” 引擎只能老老实实地分配新内存，然后遍历拷贝。而当我们使用  <font color='#f08d49'>`oldArray.with(2, 'mango')`</font> 时，我们告诉引擎：“我需要一个和 <font color='#f08d49'>`oldArray`</font> 几乎一样的新数组，只有一个位置不同。”
+
+对于一个包含 100 万个元素的数组，`map()` 和 `slice()` 需要复制 100 万个元素引用，而 `with()` 的理想开销接近于只处理 1 个元素。这就是“性能翻倍”说法的底气所在。
