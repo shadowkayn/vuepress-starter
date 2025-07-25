@@ -27,8 +27,10 @@ jobs:
           run_install: false  # 禁止自动 install，让我们手动控制
 
       - name: 🔄 添加 pnpm 到 PATH
-        run: echo "${HOME}/.local/share/pnpm" >> $GITHUB_PATH
-        shell: bash
+        run: |
+          export PNPM_HOME="$HOME/.local/share/pnpm"
+          echo "$PNPM_HOME" >> $GITHUB_PATH
+          echo "export PATH=$PNPM_HOME:$PATH" >> $HOME/.bashrc
 
       - name: 📦 安装依赖
         run: pnpm install
