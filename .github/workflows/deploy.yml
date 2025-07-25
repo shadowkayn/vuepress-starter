@@ -22,12 +22,14 @@ jobs:
       - name: 📦 安装 pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 8  # 写明使用的 pnpm 版本号（例如 8.x）
+          version: 8  # 指定 pnpm 主版本号
+          run_install: false  # 取消自动安装依赖，由我们手动执行
 
       - name: 📦 安装依赖
-        run: |
-          pnpm install
-          pnpm add -D sass-embedded sass
+        run: pnpm install
+
+      - name: 🔧 安装 sass（可选）
+        run: pnpm add -D sass-embedded sass
 
       - name: 🔧 配置 Git 用户
         run: |
