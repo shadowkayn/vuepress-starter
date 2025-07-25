@@ -16,30 +16,29 @@ jobs:
       - name: 🔧 设置 Node.js 环境
         uses: actions/setup-node@v3
         with:
-          node-version: '20'  # 适用于 VuePress 2
+          node-version: '20'
           registry-url: 'https://registry.npmjs.org'
-          # 重要：暂时禁用缓存，确保每次都重新安装依赖
-          # 这样可以排除缓存导致的问题
-          cache: 'npm' # 如果你使用的是 npm 安装 pnpm，这里也保持 npm
+          cache: 'npm' # 保持 npm 缓存，因为它现在用于全局安装 pnpm
 
       - name: 📦 安装 pnpm (通过 npm 全局安装)
-        # 再次确认通过 npm 全局安装 pnpm，这是最稳定的方式
         run: npm install -g pnpm@8
 
       - name: 🔍 验证 pnpm 安装和版本
-        # 打印 pnpm 版本，确认它已安装并可用
         run: pnpm -v
 
+      - name: 🗑️ 移除其他锁定文件 (保险措施)
+        # 这项措施有助于消除任何可能的混淆
+        run: |
+          rm -f package-lock.json
+          rm -f npm-shrinkwrap.json
+          rm -f yarn.lock
+          echo "Removed non-pnpm lock files."
+
       - name: 📦 安装项目依赖
-        # 强制 pnpm 重新安装所有依赖，即使锁文件存在
-        # 这样可以确保任何潜在的缓存或状态问题被清除
-        # --frozen-lockfile 确保严格按照 lockfile 安装，如果 lockfile 不匹配则报错
-        # --prefer-frozen-lockfile 尝试按照 lockfile 安装，如果lockfile有问题就重新生成
-        # 我们用 pnpm install 即可，它会自行处理 lockfile
-        run: pnpm install --no-frozen-lockfile # 避免在 CI 环境中锁文件不匹配导致报错，允许重新生成依赖
+        # 确保 pnpm 在项目根目录安装依赖，并且可以接受非严格模式
+        run: pnpm install --no-frozen-lockfile
 
       - name: ✅ 批准构建脚本
-        # 确保之前在本地批准的构建脚本在 CI 环境中也生效
         run: pnpm approve-builds @parcel/watcher esbuild vue-demi
 
       - name: 🔧 安装 sass（可选）
@@ -51,9 +50,11 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: 🏗️ 构建 VuePress
+        # 显式地通过 pnpm 执行 build 脚本
         run: pnpm run build
 
       - name: 🚀 部署到 GitHub Pages
+        # 显式地通过 pnpm 执行 deploy 脚本
         run: pnpm run deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
