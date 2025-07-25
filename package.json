@@ -1,7 +1,7 @@
 {
   "devDependencies": {
-    "@vuepress/bundler-vite": "^2.0.0-rc.7",
-    "@vuepress/plugin-search": "2.0.0-rc.110",
+    "@vuepress/bundler-vite": "2.0.0-rc.24",
+    "@vuepress/plugin-search": "2.0.0-rc.112",
     "gh-pages": "^6.2.0",
     "sass": "^1.89.2",
     "sass-embedded": "^1.85.1"
@@ -12,7 +12,7 @@
     "deploy": "vuepress build docs && gh-pages -d docs/.vuepress/dist -r https://x-access-token:${GITHUB_TOKEN}@github.com/shadowkayn/vuepress-starter.git"
   },
   "dependencies": {
-    "@vuepress/client": "^2.0.0-rc.2",
+    "@vuepress/client": "2.0.0-rc.24",
     "@vuepress/theme-default": "2.0.0-rc.112",
     "prismjs": "^1.30.0",
     "vue": "^3.2",
