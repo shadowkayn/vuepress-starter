@@ -17,17 +17,21 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20'  # 适用于 VuePress 2
-          registry-url: 'https://registry.npmjs.org'  # 🔴 必须写上这个！否则 pnpm 会挂！
-          cache: 'pnpm'  # 启用 pnpm 缓存，提升速度
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm' # 改为 npm 缓存
 
-      - name: 📦 安装 pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-          run_install: true  # 建议设置为 true，让 pnpm 自动安装依赖，除非你有特殊需求
+      - name: 📦 安装 pnpm (通过 npm 全局安装)
+        run: npm install -g pnpm@8
 
-      - name: 🔄 确保 pnpm 在 PATH 中
-        run: echo "$HOME/.local/share/pnpm" >> $GITHUB_PATH
+      - name: 🔍 验证 pnpm 安装
+        run: pnpm -v # 检查 pnpm 版本
+
+      # 注意：不再需要显式设置 PATH，因为 npm 全局安装通常会自动处理
+
+      - name: 📦 安装依赖 (使用 pnpm)
+        # 这一步是必须的，因为上面的 npm install -g pnpm@8 只是安装了 pnpm 工具本身，
+        # 项目的依赖还是需要通过 pnpm install 来安装。
+        run: pnpm install
 
       - name: 🔧 安装 sass（可选）
         run: pnpm add -D sass-embedded sass
@@ -41,6 +45,6 @@ jobs:
         run: pnpm run build
 
       - name: 🚀 部署到 GitHub Pages
-        run: pnpm run deploy   # 对应你的 package.json 里的 build 命令
+        run: pnpm run deploy
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub 自动提供的 Token，允许推送到 gh-pages
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
