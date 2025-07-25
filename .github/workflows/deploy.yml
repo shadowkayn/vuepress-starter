@@ -21,11 +21,10 @@ jobs:
           cache: 'npm' # 明确设置为 npm 缓存
 
       - name: 📦 安装项目依赖 (npm)
-        # npm install 会根据 package.json 和 package-lock.json 安装依赖
-        run: npm install
+        # 强制使用 --legacy-peer-deps 解决对等依赖冲突
+        run: npm install --legacy-peer-deps
 
       - name: 🔧 安装 sass（可选）
-        # 如果需要，使用 npm 安装 sass
         run: npm install -D sass-embedded sass
 
       - name: 🔧 配置 Git 用户
@@ -34,11 +33,9 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: 🏗️ 构建 VuePress (npm)
-        # 使用 npm run build 执行构建脚本
         run: npm run build
 
       - name: 🚀 部署到 GitHub Pages (npm)
-        # 使用 npm run deploy 执行部署脚本
         run: npm run deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
