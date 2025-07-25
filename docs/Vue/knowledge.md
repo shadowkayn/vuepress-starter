@@ -184,3 +184,149 @@ const goDetail = () => {
 - Vue2：Vue.use(plugin)
 - Vue3：app.use(plugin)
 <br />
+
+
+### **3、customRef 和 shallowRef妙用**
+在熟练掌握 `ref` 和 `reactive` 之后，随着复杂功能或优化性能的出现，需要在必要时“绕过”或“定制”Vue的默认深度响应式行为。
+-  <font color="#f08d49">customRef</font> : 创建一个自定义的ref，并对其依赖跟踪和更新触发进行显式控制。
+-  <font color="#f08d49">shallowRef</font> : 创建一个只对 `.value` 的赋值操作是响应式的ref。其内部的值不会被深层地转换为响应式对象。
+- `customRef` 体现了对响应式原理的理解：响应式系统工作的两个核心是 `track()（依赖收集）` 和 `trigger()（更新触发）` 。能够使用 `customRef` 意味着我们已经从 API 使用者变成了 API “创造者”。
+- `shallowRef` 是性能优化的利器：当有大型的、不可变的数据结构时（例如一个巨大的JSON对象、一个第三方库的实例），使用 `ref` 会对其进行深度递归代理，造成不必要的性能开销。此时 shallowRef 就是最佳选择。
+下面举两个实际例子：
+1. 创建一个防抖自定义ref
+```javascript
+// composables/useDebouncedRef.ts;
+import {customRef }from'vue';
+
+/**
+ * 创建一个防抖自定义ref
+ * @param value 初始值
+ * @param delay 延迟毫秒数，默认 500ms
+ * @returns {Ref<T>}
+ */
+export function useDebouncedRef<T>(value:T,delay=500){
+    let timeout:number;
+    // customRef 是一个强大的API，允许我们完全控制 ref 的依赖跟踪和更新触发
+    return customRef((track,trigger)=>{
+        return {
+            get(){
+                track(); //告诉Vue，这个值被读取了，需要追踪依赖
+                return value;
+            },
+            set(newValue: T){
+                clearTimeout(timeout);
+                timeout = setTimeout(()=>{
+                    value = newValue;
+                    trigger(); //告诉Vue，值已经改变，请更新D0M
+                }, delay)
+            }
+        }
+    })
+}
+```
+使用 `useDebouncedRef`
+```vue
+<script setup lang="ts">
+  import { useDebouncedRef }from'./composables/useDebouncedRef';
+  
+  //使用起来就像一个普通的 ref，但它自带防抖功能!
+  const searchText = useDebouncedRef('',500);
+</script>
+```
+
+2. 使用 `shallowRef` 优化大型数据
+假设我们需要引入一个庞大的图表库实例，这个实例本身有很多内部属性，但我们只关心实例本身是否被替换。
+```vue
+<template>
+    <div ref="chartContainer"></div>
+</template>
+
+<script setup lang="ts">
+import { onMounted, shallowRef, triggerRef }from 'vue';
+import SomeHeavyChartLibrary from 'some-heavy-chart-library';  //假设一个庞大的图表库实例
+
+//使用 shallowRef，Vue 不会尝试代理 aChartInstance 内部的所有属性
+const chartInstance = shallowRef(null);
+const chartContainer = ref(null);
+
+onMounted(()=>{
+    //chartInstance 的赋值是响应式的
+    chartInstance.value = new SomeHeavyChartLibrary(chartContainer.value);
+});
+
+function updateChartWithOptions(newOptions){
+  if(chartInstance.value){
+    // chartInstance 内部属性的改变不会触发更新
+    chartInstance.value.setOptions(newOptions);
+    
+    // 如果我们确实需要手动强制更新，可以使用 triggerRef
+    // triggerRef(chartInstance);
+  }
+}
+</script>
+```
+
+
+### **4、对象映射：条件判断的 “替代品”**
+传统 `switch`判断示例：
+```javascript
+function getStatusMessage(status) {
+    switch (status) {
+        case 'loading':
+            return '正在加载...';
+        case 'success':
+            return '操作成功！';
+        case 'error':
+            return '操作失败，请重试';
+        case 'timeout':
+            return '请求超时';
+        default:
+            return '未知状态';
+    }
+}
+```
+使用`对象映射` ，上面的代码可以简化为：
+```javascript
+const statusMessages = {
+    loading: '正在加载...',
+    success: '操作成功！',
+    error: '操作失败，请重试',
+    timeout: '请求超时',
+}
+
+function getStatusMessage(status){
+    return statusMessages[status] || '未知状态';
+}
+```
+<br />
+
+<font color="#f08d49">函数映射</font> ：处理复杂逻辑
+```javascript
+const userActions = {
+    login: (user) => {
+        console.log(`用户 ${user.name} 登录成功`);
+        return { success: true, token: generateToken(user) }
+    },
+    logout: (user) => {
+        console.log(`用户 ${user.name} 退出登录`);
+        clearSession(user.id);
+        return { success: true };
+    },
+    register: (user)=> {
+        const newUser = createUser(user);
+        console.log(`用户 ${newUser.name} 注册成功`);
+        return { success: true, user: newUser };
+    }
+}
+
+function handleUserAction(action,data) {
+    const handler = userActions[action];
+    if(handler) {
+        return handler(data);
+    }
+    throw new Error(`不支持的操作:${action}`);
+}
+
+// 使用示例
+handleUserAction('login',{ name:'Alice', password:'123456' });
+```
