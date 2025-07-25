@@ -26,8 +26,6 @@ jobs:
       - name: 🔍 验证 pnpm 安装
         run: pnpm -v # 检查 pnpm 版本
 
-      # 注意：不再需要显式设置 PATH，因为 npm 全局安装通常会自动处理
-
       - name: 📦 安装依赖 (使用 pnpm)
         # 这一步是必须的，因为上面的 npm install -g pnpm@8 只是安装了 pnpm 工具本身，
         # 项目的依赖还是需要通过 pnpm install 来安装。
