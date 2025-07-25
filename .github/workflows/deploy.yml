@@ -3,7 +3,7 @@ name: Deploy VuePress Site
 on:
   push:
     branches:
-      - master  # 当 master 分支有新的 push 时触发
+      - master
 
 jobs:
   build-deploy:
@@ -18,24 +18,20 @@ jobs:
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
-          cache: 'npm' # 保持 npm 缓存，因为它现在用于全局安装 pnpm
+          # 重要：明确设置为 'pnpm' 缓存
+          # 这会告诉 setup-node 期待并查找 pnpm-lock.yaml
+          cache: 'pnpm'
 
       - name: 📦 安装 pnpm (通过 npm 全局安装)
+        # 即使 setup-node 已经设置了 pnpm，这一步作为保险也保留
         run: npm install -g pnpm@8
 
       - name: 🔍 验证 pnpm 安装和版本
         run: pnpm -v
 
-      - name: 🗑️ 移除其他锁定文件 (保险措施)
-        # 这项措施有助于消除任何可能的混淆
-        run: |
-          rm -f package-lock.json
-          rm -f npm-shrinkwrap.json
-          rm -f yarn.lock
-          echo "Removed non-pnpm lock files."
-
-      - name: 📦 安装项目依赖
-        # 确保 pnpm 在项目根目录安装依赖，并且可以接受非严格模式
+      - name: 📦 确保 pnpm-lock.yaml 存在且是最新的
+        # 这一步是关键！如果 pnpm-lock.yaml 不存在或不最新，它会报错并重新生成。
+        # 确保 pnpm 在运行此命令时能找到 package.json
         run: pnpm install --no-frozen-lockfile
 
       - name: ✅ 批准构建脚本
@@ -50,11 +46,9 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: 🏗️ 构建 VuePress
-        # 显式地通过 pnpm 执行 build 脚本
         run: pnpm run build
 
       - name: 🚀 部署到 GitHub Pages
-        # 显式地通过 pnpm 执行 deploy 脚本
         run: pnpm run deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
