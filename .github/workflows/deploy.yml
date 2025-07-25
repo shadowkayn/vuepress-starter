@@ -1,9 +1,9 @@
-name: Deploy VuePress Site
+name: Deploy VuePress Site (using npm)
 
 on:
   push:
     branches:
-      - master
+      - master # 当 master 分支有新的 push 时触发
 
 jobs:
   build-deploy:
@@ -16,42 +16,29 @@ jobs:
       - name: 🔧 设置 Node.js 环境
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: '20' # 适用于 VuePress 2
           registry-url: 'https://registry.npmjs.org'
-          # 重要：不设置缓存类型或设置为 'npm'，避免 setup-node 混淆
-          # 我们会手动安装 pnpm 并管理其 PATH
-          cache: 'npm'
+          cache: 'npm' # 明确设置为 npm 缓存
 
-      - name: 📦 手动安装 pnpm v8
-        # 这是一种更直接和可靠的 pnpm 安装方式
-        run: |
-          npm install -g pnpm@8 # 或者直接下载二进制文件
-          # 验证 pnpm 是否在 PATH 中
-          pnpm -v
-        env:
-          # 确保 PNPM_HOME 被设置，并且在 PATH 中
-          # 通常 npm -g 安装的包会自动添加到 PATH
-          PNPM_HOME: ${{ runner.tool_cache }}/pnpm/8.x/x64 # 这是一个示例路径，实际由 npm -g 决定
-
-      - name: 📦 安装项目依赖
-        # 确保 pnpm 在项目根目录安装依赖，并且可以接受非严格模式
-        run: pnpm install --no-frozen-lockfile
-
-      - name: ✅ 批准构建脚本
-        run: pnpm approve-builds @parcel/watcher esbuild vue-demi
+      - name: 📦 安装项目依赖 (npm)
+        # npm install 会根据 package.json 和 package-lock.json 安装依赖
+        run: npm install
 
       - name: 🔧 安装 sass（可选）
-        run: pnpm add -D sass-embedded sass
+        # 如果需要，使用 npm 安装 sass
+        run: npm install -D sass-embedded sass
 
       - name: 🔧 配置 Git 用户
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: 🏗️ 构建 VuePress
-        run: pnpm run build
+      - name: 🏗️ 构建 VuePress (npm)
+        # 使用 npm run build 执行构建脚本
+        run: npm run build
 
-      - name: 🚀 部署到 GitHub Pages
-        run: pnpm run deploy
+      - name: 🚀 部署到 GitHub Pages (npm)
+        # 使用 npm run deploy 执行部署脚本
+        run: npm run deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
