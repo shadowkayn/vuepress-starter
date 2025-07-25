@@ -8,6 +8,7 @@ docs/.vuepress/dist/
 # 忽略日志文件
 *.log
 package-lock.json
+pnpm-lock.yaml
 
 # 忽略操作系统相关的临时文件
 .DS_Store

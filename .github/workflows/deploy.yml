@@ -17,12 +17,15 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20'  # 适用于 VuePress 2
+          cache: 'pnpm'  # 启用 pnpm 缓存，提升速度
 
-      - name: 📦 清理并安装依赖
+      - name: 📦 安装 pnpm
+        run: npm install -g pnpm
+
+      - name: 📦 安装依赖
         run: |
-          rm -rf node_modules package-lock.json
-          npm install
-          npm install -D sass-embedded sass
+          pnpm install
+          pnpm add -D sass-embedded sass
 
       - name: 🔧 配置 Git 用户
         run: |
@@ -30,9 +33,9 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: 🏗️ 构建 VuePress
-        run: npm run build  # 对应你的 package.json 里的 build 命令
+        run: pnpm run build
 
       - name: 🚀 部署到 GitHub Pages
-        run: npm run deploy  # 调用 package.json 里的 deploy 命令
+        run: pnpm run deploy   # 对应你的 package.json 里的 build 命令
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub 自动提供的 Token，允许推送到 gh-pages
