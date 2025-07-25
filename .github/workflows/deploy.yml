@@ -20,7 +20,9 @@ jobs:
           cache: 'pnpm'  # 启用 pnpm 缓存，提升速度
 
       - name: 📦 安装 pnpm
-        run: npm install -g pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
 
       - name: 📦 安装依赖
         run: pnpm install
