@@ -25,7 +25,8 @@ jobs:
         run: npm install --legacy-peer-deps
 
       - name: 🔧 安装 sass（可选）
-        run: npm install -D sass-embedded sass
+        # 这里也添加 --legacy-peer-deps
+        run: npm install -D sass-embedded sass --legacy-peer-deps
 
       - name: 🔧 配置 Git 用户
         run: |
