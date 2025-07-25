@@ -26,8 +26,8 @@ jobs:
           version: 8
           run_install: true  # 建议设置为 true，让 pnpm 自动安装依赖，除非你有特殊需求
 
-      # 注意：现在你不需要单独的 "添加 pnpm 到 PATH" 步骤了
-      # pnpm/action-setup@v2 action 已经负责将 pnpm 添加到 PATH
+      - name: 🔄 确保 pnpm 在 PATH 中
+        run: echo "$HOME/.local/share/pnpm" >> $GITHUB_PATH
 
       - name: 🔧 安装 sass（可选）
         run: pnpm add -D sass-embedded sass
