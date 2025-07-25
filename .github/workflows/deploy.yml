@@ -17,6 +17,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20'  # 适用于 VuePress 2
+          registry-url: 'https://registry.npmjs.org'  # 🔴 必须写上这个！否则 pnpm 会挂！
           cache: 'pnpm'  # 启用 pnpm 缓存，提升速度
 
       - name: 📦 安装 pnpm
