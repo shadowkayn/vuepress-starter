@@ -24,6 +24,11 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: 8
+          run_install: false  # 禁止自动 install，让我们手动控制
+
+      - name: 🔄 添加 pnpm 到 PATH
+        run: echo "${HOME}/.local/share/pnpm" >> $GITHUB_PATH
+        shell: bash
 
       - name: 📦 安装依赖
         run: pnpm install
