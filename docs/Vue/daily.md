@@ -609,3 +609,131 @@ const handleSearch = debounce(e => {
 </template>
 ```
 el-form-item 标签外面包裹一层div 用来循环字段，关键点在于name属性  **:name="['inspectionTimeArr', index, 'inspectionTime']"** , index为当前循环的索引，name属性为当前字段的属性名称，inspectionTimeArr为循环数组
+
+
+### 5、css动画实现容器内元素 “无线循环滚动”
+核心思路：`copy一份数据` 用来循环滚动；纯 CSS 动画，避免频繁 DOM 操作；
+<br />
+定义动画：
+```css
+.scroll-list.animate {
+  animation: scroll-up 10s linear infinite;
+}
+
+@keyframes scroll-up {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+```
+<br />
+
+直接看例子：
+```vue
+// VerticalLoopScroll.vue
+
+<template>
+  <div class="scroll-container" @mouseenter="pauseScroll" @mouseleave="resumeScroll">
+    <div ref="scrollListRef" class="scroll-list" :class="{ animate: shouldScroll }">
+      <div v-for="item in listData" :key="item.id" class="row">
+        {{ item.name }}
+      </div>
+      <!-- 渲染副本实现无缝滚动 -->
+      <template v-if="listData.length > showLength">
+        <div v-for="item in listData" :key="'copy_' + item.id" class="row">
+          {{ item.name }}
+        </div>
+      </template>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, watch, nextTick } from 'vue';
+
+const props = defineProps({
+  listData: {
+    type: Array,
+    default: () => []
+  },
+  // 容器显示数量
+  showLength: {
+    type: Number,
+    default: 3
+  }
+});
+
+const scrollListRef = ref(null);
+const shouldScroll = ref(false);
+
+// 初始化滚动逻辑
+const setScrollAnimation = () => {
+  if (!scrollListRef.value) return;
+
+  shouldScroll.value = false; // 先移除动画类
+  nextTick(() => {
+    if (props.listData.length > 3) {
+      shouldScroll.value = true;
+    } else {
+      scrollListRef.value.style.transform = 'translateY(0)';
+    }
+  });
+};
+
+// 监听数据变化
+watch(
+  () => props.listData,
+  () => {
+    nextTick(setScrollAnimation);
+  },
+  { immediate: true }
+);
+
+const pauseScroll = () => {
+  scrollListRef.value.style.animationPlayState = 'paused';
+};
+
+const resumeScroll = () => {
+  scrollListRef.value.style.animationPlayState = 'running';
+};
+</script>
+
+<style scoped>
+.scroll-container {
+  height: 120px; /* 展示高度按实际需要调整（如3行高度） */
+  overflow: hidden;
+  position: relative;
+  border: 1px solid #9d6b6b;
+  border-radius: 4px;
+}
+
+.scroll-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.scroll-list.animate {
+  animation: scroll-up 10s linear infinite;
+}
+
+@keyframes scroll-up {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+.row {
+  height: 40px; /* 每行高度 */
+  line-height: 40px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #eee;
+}
+</style>
+```
