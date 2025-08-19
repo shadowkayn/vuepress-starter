@@ -612,3 +612,61 @@ console.log(oldArray); // ['apple', 'banana', 'orange', 'grape'] (完美！原�
 总结：<font color='#f08d49'>`with()`</font> 向 JavaScript 引擎传递了一个更明确的信号。当我们使用 <font color='#f08d49'>`[...oldArray]`</font>  时，我们告诉引擎：“我需要一个这个数组的完整克隆品，所有元素都得复制一遍。” 引擎只能老老实实地分配新内存，然后遍历拷贝。而当我们使用  <font color='#f08d49'>`oldArray.with(2, 'mango')`</font> 时，我们告诉引擎：“我需要一个和 <font color='#f08d49'>`oldArray`</font> 几乎一样的新数组，只有一个位置不同。”
 
 对于一个包含 100 万个元素的数组，`map()` 和 `slice()` 需要复制 100 万个元素引用，而 `with()` 的理想开销接近于只处理 1 个元素。这就是“性能翻倍”说法的底气所在。
+
+
+### 8、URLSearchParams 对象 , URL查询参数解析
+过去，要从一个URL中获取查询参数（如 id），我们通常需要使用正则表达式或一连串的 split 方法，代码冗长且容易出错
+<br />
+代码如下：
+```javascript
+// 以前的方式
+function getQueryParam(url, param) {
+     const search = url.split('?')[1];
+     if (!search) { 
+         return null; 
+     }
+     const params = search.split('&');
+     for (let i = 0; i < params.length; i++) {
+        const pair = params[i].split('=');
+        if  (pair[0] === param) { 
+            return decodeURIComponent(pair[1]); 
+        }
+     }
+     return  null;
+}
+
+const url = 'https://example.com/page?id=123&category=tech';
+const id = getQueryParam(url, 'id'); // "123"
+```
+
+现在，`URLSearchParams` 对象让这一切变得无比简单：
+```javascript
+// 现代的方式
+const url = new URL('https://example.com/page?id=123&category=tech');
+const id = url.searchParams.get('id');   //"123"
+```
+
+### 9、Object.groupBy() 数组分组
+将一个扁平的数组按照某个属性进行分组，是数据处理中非常常见的需求。
+```javascript
+const products = [
+    { name: '苹果', category: '水果' },
+    { name: '电视', category: '电器' }
+];
+
+// 以前的方式
+const grouped = products.reduce((acc, product) => {
+ const key = product.category;
+ if (!acc[key]) { acc[key] = []; }
+    acc[key].push(product);
+    return acc;
+}, {});
+// grouped: { '水果': [...], '电器': [...] }
+```
+
+ES2023 引入了 `Object.groupBy()`，让分组操作变得语义化且极其简单。
+```javascript
+// 现代的方式
+const grouped = Object.groupBy(products, product =>product.category);
+// grouped:{ '水果' :[...]，'电器': [...] ]
+```
