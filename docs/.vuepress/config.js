@@ -19,7 +19,7 @@ export default defineUserConfig({
             description: '个人博客-用来学习记录',
 
             // Public 文件路径
-            logo: '/images/logo.jpg',
+            logo: '/images/myImages/wife2.png',
 
             // 导航栏
             navbar: [

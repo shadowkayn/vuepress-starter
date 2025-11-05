@@ -40,13 +40,18 @@
   min-height: 100vh;
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
-  background: url('/vuepress-starter/images/myImages/bg-login-basic.jpeg');
-  opacity: 0.9;
+  //background: url('/vuepress-starter/images/myImages/bg-login-basic.jpeg');
+  background: url("../public/images/myImages/wife2.png") repeat-y;
+  background-size: 100%;
+  opacity: 1;
   z-index: -1;
   pointer-events: none;
 }
 
 .vp-sidebar {
+  background-color: transparent;
+  // 毛玻璃效果
+  backdrop-filter: blur(30px);
   .vp-sidebar-items {
     li {
       &:nth-child(1) {
@@ -63,6 +68,13 @@
 }
 
 
+[data-theme=light]{
+  --vp-c-text: rgb(57, 221, 236);
+  .vp-page::before{
+    opacity: 1;
+  }
+}
+
 [data-theme=dark] {
   --vp-c-accent: #3dd68c;
   --vp-c-accent-bg: #3aa675;
@@ -73,7 +85,7 @@
   --vp-c-bg-alt: #292935;
   --vp-c-bg-elv: #313140;
 
-  --vp-c-text: rgb(235 235 245 / 86%);
+  --vp-c-text: rgb(57, 221, 236);
   --vp-c-text-mute: rgb(235 235 245 / 60%);
   --vp-c-text-subtle: rgb(235 235 245 / 38%);
   --vp-c-gutter: #000;
@@ -121,6 +133,9 @@
 
 .vp-theme-container {
   .vp-navbar {
+    background-color: transparent;
+    // 毛玻璃效果
+    backdrop-filter: blur(30px);
     .vp-site-logo {
       max-height: 40px;
       border-radius: 4px;
