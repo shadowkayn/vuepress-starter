@@ -51,7 +51,7 @@
 .vp-sidebar {
   background-color: transparent;
   // 毛玻璃效果
-  backdrop-filter: blur(30px);
+  backdrop-filter: blur(50px);
   .vp-sidebar-items {
     li {
       &:nth-child(1) {
@@ -135,7 +135,7 @@
   .vp-navbar {
     background-color: transparent;
     // 毛玻璃效果
-    backdrop-filter: blur(30px);
+    backdrop-filter: blur(50px);
     .vp-site-logo {
       max-height: 40px;
       border-radius: 4px;
