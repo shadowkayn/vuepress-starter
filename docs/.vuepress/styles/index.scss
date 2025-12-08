@@ -27,6 +27,9 @@
   h3 span {
     font-size: 18px;
   }
+  h4 span {
+    font-size: 17px;
+  }
 }
 
 .vp-page {
@@ -61,6 +64,7 @@
           font-size: 1.3em;
           white-space: pre-line;
           color: #eebd5b;
+          text-shadow: 1px -1px #fff, -1px 1px #999, -8px 8px 8px #808080;
         }
       }
     }
