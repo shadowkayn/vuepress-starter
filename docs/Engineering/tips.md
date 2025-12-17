@@ -217,3 +217,13 @@ git branch -vv
 ```shell
 * dev_newStyle        abc1234 [origin/dev_newStyle] Last commit message
 ```
+
+### 4、git基本知识
+1) `git init` 创建一个空的 Git 仓库
+2) `git add .` 添加所有文件到暂存区
+3) `git rm -r --cached node_modules` 删除暂存区中的文件(node_modules)
+4) `git commit -m "first commit"` 提交暂存区中的文件(初始化提交)
+5) `git remote add origin <你刚才复制的远程仓库地址>` 添加远程仓库
+6) `git branch -M main` （可选）重命名主分支 现在的 Git 默认主分支名通常是 main，如果你的本地显示是 master，可以统一一下
+7) `git push -u origin main` 推送到远程仓库
+8) `git push -u origin main --force` 强行推送； 这条命令会直接用你本地的内容替换掉远程的内容(在创建远程仓库时，可能勾选了README 文件，代码冲突)。
