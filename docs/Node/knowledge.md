@@ -1430,3 +1430,99 @@ app.listen(PROT, () => {
 }
 ```
 
+### 8、日志系统
+没有日志的后端，本质上是“盲飞”。
+<br>
+1) 安装日志库 winston
+```bash
+pnpm add winston
+```
+2) 新建 `src/utils/logger.js` , 写入
+```js
+const { createLogger, format, transports } = require("winston");
+
+// 创建一个 Winston 日志记录器实例
+// 配置包括时间戳、错误堆栈跟踪和 JSON 格式化
+const logger = createLogger({
+    level: "info", // 设置日志级别为 info
+    format: format.combine(
+        // 组合多种格式化选项
+        format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }), // 添加时间戳格式
+        format.errors({ stack: true }), // 记录错误时包含堆栈信息
+        format.json(), // 以 JSON 格式输出日志
+    ),
+    transports: [
+        // 定义日志传输目标
+        new transports.Console(), // 控制台输出
+        new transports.File({ filename: "logs/error.log", level: "error" }), // 错误日志文件
+        new transports.File({ filename: "logs/combined.log" }), // 综合日志文件
+    ],
+});
+
+module.exports = logger;
+```
+3) 替换之前写的 console.log、console.error等等, 例如在 `service.js` 中使用日志系统:
+```js
+app.listen(PROT, () => {
+    logger.info(`🚀 服务已启动：http://localhost:${PROT}`);
+});
+```
+然后会在项目根目录下生成 logs 文件夹，里面有 error.log 和 combined.log 两个文件，分别记录了错误和综合日志。
+<br>
+控制台会输出这种日志：
+```bash
+{"level":"info","message":"🚀 服务已启动：http://localhost:3000","timestamp":"2025-12-17 09:51:57"}
+```
+### 9、安全基础
+1) 跨域访问控制
+跨域访问控制，即同源策略，是浏览器为了安全而设置的限制，限制了不同源的脚本访问不同源的资源。
+```bash
+pnpm add cors
+```
+在 `app.js` 中添加 cors 中间件：
+```js
+const cors = require("cors");
+
+app.use(
+  cors({
+      // 指定允许访问的源（域名+端口），只允许这两个本地开发地址访问
+      // http://localhost:3000 通常是 React/Vue 等前端开发服务器端口
+      // http://localhost:5173 通常是 Vite 开发服务器端口
+      origin: ["http://localhost:3000", "http://localhost:5173"],
+      // 允许跨域请求携带认证信息（如 cookies、HTTP认证等）
+      credentials: true
+  })
+);
+```
+
+2) 基础安全头 Helmet
+防止最基础的 XSS / Clickjacking
+```bash
+pnpm add helmet
+```
+在 `app.js` 中添加 helmet 中间件：
+```js
+const helmet = require("helmet");
+
+app.use(helmet());
+```
+
+3) 简单限流器
+防止脚本刷接口、防止误操作压垮服务
+```bash
+pnpm add express-rate-limit 
+```
+在 `app.js` 中添加 express-rate-limit 中间件：
+```js
+const rateLimit = require("express-rate-limit");
+
+const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 分钟内最多请求 100 次
+    max: 100,
+})
+
+app.use(limiter);
+```
+
+
+
