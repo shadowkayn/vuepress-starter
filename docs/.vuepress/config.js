@@ -103,6 +103,14 @@ export default defineUserConfig({
                         ],
                     },
                     {
+                        text: "Next.Js",
+                        collapsable: false, // 不折叠
+                        children: [
+                            { text: "开发场景", link: "/Next/daily.md" },
+                            { text: "知识点", link: "/Next/knowledge.md" },
+                        ],
+                    },
+                    {
                         text: "工程化",
                         collapsable: false, // 不折叠
                         children: [
