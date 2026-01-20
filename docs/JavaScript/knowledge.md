@@ -670,3 +670,45 @@ ES2023 引入了 `Object.groupBy()`，让分组操作变得语义化且极其简
 const grouped = Object.groupBy(products, product =>product.category);
 // grouped:{ '水果' :[...]，'电器': [...] ]
 ```
+
+
+### 10、Promise.all 和 Promise.allSettled 区别
+| 特性      | Promise.all | Promise.allSettled |
+|---------|-------------|------------------|
+| 判定机制    | 全对才行 | 只要有一个失败，整个 Promise 立即进入 catch 分支。,不管输赢。它会等待所有 Promise 都结束，无论成功还是失败 |
+| 错误处理    | 错误会立即被 catch 捕获 | 所有错误都会被 reject 捕获 |
+| 返回结果    | 成功的 结果数组 | 包含状态和值的 对象数组 |
+| 容错性     | 低。一个接口 500，其他接口的数据你也拿不到。 | 高。某个接口挂了，你依然可以处理其他成功返回的数据。 |
+
+举例：
+```js
+// Promise.all() 直接返回成功结果
+// "data": [
+//     {
+//         "type": "教程",
+//         "value": 2
+//     },
+//     {
+//         "type": "攻略",
+//         "value": 1
+//     }
+// ]
+
+// Promise.allSettled() 返回状态和结果
+// {
+//     "status": "fulfilled",
+//     "value": {
+//     "success": true,
+//         "data": [
+//             {
+//                 "type": "教程",
+//                 "value": 2
+//             },
+//             {
+//                 "type": "攻略",
+//                 "value": 1
+//             }
+//         ]
+//     }
+// }
+```
