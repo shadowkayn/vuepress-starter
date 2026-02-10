@@ -1,4 +1,4 @@
-## knowledge
+## 一、Node 基础
 
 ### 1、process 模块
 #### 1.1、使用 `process.argv` 获取命令行参数
@@ -1526,3 +1526,16 @@ app.use(limiter);
 
 
 
+## 二、文件上传
+在后端架构中，文件上传的本质逻辑只有两套：
+
+1、`Server-Side Proxy` (服务端代理模式)：
+ - 前端 -> 你的后端 -> 云端。
+ - 技术点：Buffer 处理、流式转发（Stream）、文件类型校验。
+ - 无论 OSS 还是 Cloudinary，这一套 Node.js 代码 90% 是重复的。
+
+
+2、`Client-Side Direct` (客户端直传模式)：
+ - 前端 -> 后端请求签名 -> 前端拿着签名直接传云端。
+ - 技术点：签名算法（Signature/STS）、跨域安全控制。
+ - 这是最高级的模式。OSS 的 STS 流程和 Cloudinary 的 Unsigned Upload 流程逻辑一致，只是参数名不同。

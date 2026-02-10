@@ -29,12 +29,12 @@ export default defineUserConfig({
                     link: '/',
                 },
                 {
-                    text: 'Articles',
-                    link: '/Articles/README.md',
-                },
-                {
                     text: 'Components',
                     link: '/components/README.md',
+                },
+                {
+                    text: 'Articles',
+                    link: '/Articles/README.md',
                 },
                 // NavbarGroup
                 {
@@ -61,6 +61,13 @@ export default defineUserConfig({
                     // SidebarItem
                     {
                         text: 'Welcome to my \nMickey Mouse House !',
+                    },
+                    {
+                        text: "Advanced Must See",
+                        collapsible: false, // 不折叠
+                        children: [
+                            { text: "进阶必看", link: "/Advanced/README.md" },
+                        ],
                     },
                     {
                         text: "CSS",
